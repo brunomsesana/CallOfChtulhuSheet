@@ -1,0 +1,199 @@
+body{
+    background-color: #20333c;
+}
+.centralized{
+    text-align: center;
+}
+.pad20{
+    padding: 20px;
+}
+.window{
+    background-color: #bcc4bc;
+    border-radius: 50px;
+    overflow-x: auto;
+}
+.empty{
+    padding-top: 30px;
+}
+@media (min-width: 992px) {
+    .l10{
+        float: left; min-width: 52px; width: 9.5%;
+    }
+    .r10{
+        float: right; width: 9.5%;
+    }
+    .r25{
+        float: right; width: 25%;
+    }
+    .divsm{
+        display: none;
+    }
+    .divlg{
+        display: auto;
+    }
+    .divssm{
+        display: none;
+    }
+    .divsssm{
+        display: none;
+    }
+}
+@media (min-width: 463px) and (max-width: 991px) {
+    .divlg{
+        display: none;
+    }
+    .divsm{
+        display: auto;
+    }
+    .divssm{
+        display: none;
+    }
+    .divsssm{
+        display: none;
+    }
+    .l10{
+        float: left; min-width: 52px; width: 15%;
+    }
+    .r10{
+        float: right; min-width: 52px; width: 15%;
+    }
+    .r25{
+        float: right; min-width: 52px; width: 25%;
+    }
+    .l25{
+        float: left; min-width: 52px; width: 25%;
+    }
+}
+@media (min-width: 338px) and (max-width: 462px) {
+    .divlg{
+        display: none;
+    }
+    .divsm{
+        display: none;
+    }
+    .divssm{
+        display: auto;
+    }
+    .divsssm{
+        display: none;
+    }
+    .l10{
+        float: left; min-width: 52px; width: 15%;
+    }
+    .r10{
+        float: right; min-width: 52px; width: 15%;
+    }
+    .r25{
+        float: right; min-width: 52px; width: 25%;
+    }
+    .l25{
+        float: left; min-width: 52px; width: 25%;
+    }
+}
+@media (max-width: 337px) {
+    .divlg{
+        display: none;
+    }
+    .divsm{
+        display: none;
+    }
+    .divssm{
+        display: none;
+    }
+    .divsssm{
+        display: auto;
+    }
+    .l10{
+        float: left; min-width: 52px; width: 15%;
+    }
+    .r10{
+        float: right; min-width: 52px; width: 15%;
+    }
+    .r25{
+        float: right; min-width: 52px; width: 25%;
+    }
+    .l25{
+        float: left; min-width: 52px; width: 25%;
+    }
+}
+.innerWin{
+    border-radius: 10px;
+    background-color: #a1eae9;
+    padding: 10px;
+    margin: 10px;
+}
+.th {
+    min-width: 170px;
+}
+.ih{
+    min-width: 100px;
+}
+@media (min-width: 992px) {
+    .divsmc{
+        display: none;
+    }
+    .divlgc{
+        display: auto;
+    }
+    .divssmc{
+        display: none;
+    }
+    .divsssmc{
+        display: none;
+    }
+}
+@media (min-width: 535px) and (max-width: 991px) {
+    .divlgc{
+        display: none;
+    }
+    .divsmc{
+        display: auto;
+    }
+    .divssmc{
+        display: none;
+    }
+    .divsssmc{
+        display: none;
+    }
+}
+@media (min-width: 346px) and (max-width: 534px) {
+    .divlgc{
+        display: none;
+    }
+    .divsmc{
+        display: none;
+    }
+    .divssmc{
+        display: auto;
+    }
+    .divsssmc{
+        display: none;
+    }
+}
+@media (max-width: 345px) {
+    .divlgc{
+        display: none;
+    }
+    .divsmc{
+        display: none;
+    }
+    .divssmc{
+        display: none;
+    }
+    .divsssmc{
+        display: auto;
+    }
+}
+@media (min-width: 507px) {
+    .ih{
+        float: left;
+    }
+    .th{
+        float: right;
+    }
+}
+@media (max-width: 506px) {
+    .innerWin{
+        clear: both;
+    }
+}
