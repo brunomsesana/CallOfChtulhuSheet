@@ -15,6 +15,83 @@ body{
 .empty{
     padding-top: 30px;
 }
+.innerWin{
+    border-radius: 10px;
+    background-color: #a1eae9;
+    padding: 10px;
+    margin: 10px;
+}
+.th {
+    min-width: 170px;
+}
+.ih{
+    min-width: 100px;
+}
+.sk{
+    min-width: 170px;
+    width: 23%;
+    float: left;
+}
+.inp{
+    min-width: 70px;
+}
+.ininnerWin{
+    background-color: #788c94;
+    border-radius: 10px;
+}
+.savebtn{
+    position: fixed;
+    right: 10px;
+    top: 10px;
+}
+.panel{
+    position: fixed;
+    background-color: #788c94;
+    border-radius: 20px;
+    width: 50%;
+    height: 80%;
+    top: 10%;
+    left: 25%;
+}
+.innerPanel{
+    background-color: #20333c;
+    width: 95%;
+    height: 95%;
+    position: absolute;
+    top: 2.5%;
+    left: 2.5%;
+    border-radius: 20px;
+    text-align: center;
+    vertical-align: middle;
+}
+.center{
+    position: fixed;
+    top: 0;
+    bottom: 18%;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 0%;
+    transition: 0.5s;
+}
+.wtext{
+    color: #bcc4bc;
+}
+.rolltxt{
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 80px;
+}
+.result{
+    position: fixed;
+    bottom: 8%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 80px;
+}
+/* #region Medias */
 @media (min-width: 992px) {
     .l10{
         float: left; min-width: 52px; width: 9.5%;
@@ -26,7 +103,7 @@ body{
         float: right; width: 25%;
     }
     .divsm{
-        display: none;
+        display: auto;
     }
     .divlg{
         display: auto;
@@ -69,7 +146,7 @@ body{
         display: none;
     }
     .divsm{
-        display: none;
+        display: auto;
     }
     .divssm{
         display: auto;
@@ -95,7 +172,7 @@ body{
         display: none;
     }
     .divsm{
-        display: none;
+        display: auto;
     }
     .divssm{
         display: none;
@@ -116,21 +193,9 @@ body{
         float: left; min-width: 52px; width: 25%;
     }
 }
-.innerWin{
-    border-radius: 10px;
-    background-color: #a1eae9;
-    padding: 10px;
-    margin: 10px;
-}
-.th {
-    min-width: 170px;
-}
-.ih{
-    min-width: 100px;
-}
 @media (min-width: 992px) {
     .divsmc{
-        display: none;
+        display: auto;
     }
     .divlgc{
         display: auto;
@@ -161,7 +226,7 @@ body{
         display: none;
     }
     .divsmc{
-        display: none;
+        display: auto;
     }
     .divssmc{
         display: auto;
@@ -175,7 +240,7 @@ body{
         display: none;
     }
     .divsmc{
-        display: none;
+        display: auto;
     }
     .divssmc{
         display: none;
@@ -197,3 +262,4 @@ body{
         clear: both;
     }
 }
+/* #endregion */
