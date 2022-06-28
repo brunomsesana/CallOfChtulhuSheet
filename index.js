@@ -6,7 +6,7 @@ function Roll(t){
     document.getElementById('panel').hidden = false
     // console.log(rand)
     setTimeout(() => {
-        document.getElementById('rollimg').style.width = '500px'
+        document.getElementById('rollimg').style.width = '16%'
     }, 250);
     setTimeout(() => {
         document.getElementById('rolltxt').innerHTML = rand
