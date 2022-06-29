@@ -20,14 +20,21 @@ function checkResult(rand, check){
     var ex = check/5;
     var go = check/2;
     if (rand <= ex){
-        return "Extreme"
+        if (rand == 1){
+            return "Critical"
+        } else {
+            return "Extreme"
+        }
     }
     else if (rand <= go){
         return "Good"
     }
     else if (rand <= check){
         return "Normal"
-    } else {
+    } else if (rand == 100){
+        return "Disaster"
+    }
+    else {
         return "Failure"
     }
 
