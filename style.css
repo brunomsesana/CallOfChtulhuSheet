@@ -52,11 +52,14 @@ body{
     height: 80%;
     top: 10%;
     left: 25%;
+    overflow: auto;
 }
 .innerPanel{
     background-color: #20333c;
     width: 95%;
     height: 95%;
+    min-height: 600px;
+    min-width: 300px;
     position: absolute;
     top: 2.5%;
     left: 2.5%;
@@ -65,31 +68,32 @@ body{
     vertical-align: middle;
 }
 .center{
-    position: fixed;
+    position: absolute;
     top: 0;
-    bottom: 18%;
+    bottom: 0;
     left: 0;
     right: 0;
     margin: auto;
     width: 0%;
     transition: 0.5s;
+    max-width: 300px;
 }
 .wtext{
     color: #bcc4bc;
 }
 .rolltxt{
-    position: fixed;
-    top: 40%;
+    position: absolute;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 80px;
+    font-size: calc(20px + 4vw);;
 }
 .result{
-    position: fixed;
-    bottom: 8%;
+    position: absolute;
+    top: 90%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 80px;
+    font-size: calc(20px + 4vw);;
 }
 /* #region Medias */
 @media (min-width: 992px) {
