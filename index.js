@@ -14,7 +14,7 @@ function Roll(t){
         document.getElementById('result').innerHTML = checkResult(rand, t.parentNode.getElementsByTagName('input')[0].value)
     }, 500);
     document.getElementById('using').value = t.parentNode.getElementsByTagName('input')[0].value;
-    document.getElementById('using2').innerHTML = "Normal: " + t.parentNode.getElementsByTagName('input')[0].value + "<br>Good: " + Math.floor(t.parentNode.getElementsByTagName('input')[0].value/2) + "<br>Extreme: " + Math.floor(t.parentNode.getElementsByTagName('input')[0].value/5);
+    document.getElementById('using2').innerHTML = "Normal: " + t.parentNode.getElementsByTagName('input')[0].value + "<br>Bom: " + Math.floor(t.parentNode.getElementsByTagName('input')[0].value/2) + "<br>Extremo: " + Math.floor(t.parentNode.getElementsByTagName('input')[0].value/5);
     document.getElementById('rerollbtn').setAttribute('onclick', 'Roll(this)')
 }
 function RollCustom(){
@@ -146,27 +146,35 @@ function checkResult(rand, check){
     var go = check/2;
     if (rand <= ex){
         if (rand == 1){
-            return "Critical"
+            return "Crítico"
         } else {
-            return "Extreme"
+            return "Extremo"
         }
     }
     else if (rand <= go){
-        return "Good"
+        return "Bom"
     }
     else if (rand <= check){
         return "Normal"
     } else if (rand == 100){
-        return "Disaster"
+        return "Disastre"
     }
     else {
-        return "Failure"
+        return "Falha"
     }
 
 }
 function cvalue(t){
     t.setAttribute('value', t.value)
 }
-function save(t){
-    console.log(document)
+function save() {
+    var n;
+    if (document.getElementById('name').value != ''){
+        n = document.getElementById('name').value
+    } else {
+        n = "CoC"
+    }
+    var blob = new Blob([document.body.innerHTML],
+                { type: "text/plain;charset=utf-8" });
+    saveAs(blob, n + ".sheet")
 }

@@ -98,7 +98,10 @@ body{
 /* #region Medias */
 @media (min-width: 992px) {
     .l10{
-        float: left; min-width: 52px; width: 9.5%;
+        float: left; min-width: 70px; width: 9.5%;
+    }
+    .l25{
+        float: left; min-width: 100px; width: 25%;
     }
     .r10{
         float: right; width: 9.5%;
@@ -210,6 +213,12 @@ body{
     .divsssmc{
         display: none;
     }
+    .clearAtt{
+        display: none;
+    }
+    .rightAtt{
+        display: auto;
+    }
 }
 @media (min-width: 535px) and (max-width: 991px) {
     .divlgc{
@@ -222,6 +231,9 @@ body{
         display: none;
     }
     .divsssmc{
+        display: none;
+    }
+    .rightAtt{
         display: none;
     }
 }
@@ -238,6 +250,9 @@ body{
     .divsssmc{
         display: none;
     }
+    .rightAtt{
+        display: none;
+    }
 }
 @media (max-width: 345px) {
     .divlgc{
@@ -251,6 +266,9 @@ body{
     }
     .divsssmc{
         display: auto;
+    }
+    .rightAtt{
+        display: none;
     }
 }
 @media (min-width: 507px) {
