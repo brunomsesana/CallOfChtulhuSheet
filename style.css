@@ -21,16 +21,8 @@ body{
     padding: 10px;
     margin: 10px;
 }
-.th {
-    min-width: 170px;
-}
 .ih{
     min-width: 100px;
-}
-.sk{
-    min-width: 170px;
-    width: 23%;
-    float: left;
 }
 .inp{
     min-width: 70px;
@@ -198,6 +190,31 @@ body{
     }
     .l25{
         float: left; min-width: 52px; width: 25%;
+    }
+}
+@media (min-width: 1400px) {
+    .sk{
+        min-width: 170px;
+        width: 23%;
+        float: left;
+    }
+}
+@media (min-width: 768px) and (max-width: 1399px) {
+    .sk{
+        min-width: 170px;
+        width: 47%;
+        float: left;
+    }
+}
+@media (min-width: 507px){
+    .th {
+        min-width: 170px;
+    }
+    .attC{
+        width: 70%;
+    }
+    .diceC{
+        width: 20%;
     }
 }
 @media (min-width: 992px) {

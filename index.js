@@ -157,7 +157,7 @@ function checkResult(rand, check){
     else if (rand <= check){
         return "Normal"
     } else if (rand == 100){
-        return "Disastre"
+        return "Desastre"
     }
     else {
         return "Falha"
@@ -177,4 +177,67 @@ function save() {
     var blob = new Blob([document.body.innerHTML],
                 { type: "text/plain;charset=utf-8" });
     saveAs(blob, n + ".sheet")
+}
+createSkills();
+function createSkills(){
+    var skpt = [
+        ["Antropologia", 1, false], 
+        ["Armas de Fogo (Pistolas)", 20, false], 
+        ["Armas de Fogo (Rifles)", 25, false],
+        ["Arqueologia", 1, false],
+        ["Arremessar", 20, false],
+        ["Armas 1", 25, true],
+        ["Arte/Ofício 1", 5, true],
+        ["Arte/Ofício 2", 5, true],
+        ["Arte/Ofício 3", 5, true],
+        ["Ciência 1", 1, true],
+        ["Ciência 2", 1, true],
+        ["Idioma (Nativo)", 0, true],
+        ["Idioma 1", 1, true],
+        ["Idioma 2", 1, true],
+        ["Idioma 3", 1, true],
+        ["Luta 1", 25, true],
+        ["Luta 2", 25, true],
+        ["Sobrevivência", 10, true],
+        ["Avaliação", 5, false],
+        ["Cavalgar", 5, false],
+        ["Charme", 15, false],
+        ["Chaveiro", 1, false],
+        ["Ciência", 1, false],
+        ["Consertos Elétricos", 10, false],
+        ["Consertos Mecânicos", 5, false],
+        ["Contabilidade", 5, false],
+        ["Direito", 5, false],
+        ["Dirigir Automóvel", 20, false],
+        ["Disfarce", 5, false],
+        ["Encontrar", 25, false],
+        ["Escutar", 20, false],
+        ["Escalar", 20, false],
+        ["Esquivar", 0, false],
+        ["Lábia", 5, false],
+        ["Intimidação", 15, false],
+        ["História", 5, false],
+        ["Furtividade", 20, false],
+        ["Luta (Briga)", 25, false],
+        ["Medicina", 1, false],
+        ["Mythos de Cthulhu", 0, false],
+        ["Mundo Natural", 10, false],
+        ["Natação", 20, false],
+        ["Navegação", 10, false],
+        ["Nível de Crédito", 0, false],
+        ["Ocultismo", 5, false],
+        ["Operar Maquinário Pesado", 1, false],
+        ["Persuasão", 10, false],
+        ["Pilotar", 1, false],
+        ["Prestidigitação", 10, false],
+        ["Primeiros Socorros", 30, false],
+        ["Psicanálise", 1, false],
+        ["Psicologia", 10, false],
+        ["Saltar", 20, false],
+        ["Rastrear", 10, false],
+        ["Usar Bibliotecas", 20, false]
+    ];
+    skpt.sort();
+    console.log(skpt)
+    var sken = [];
 }
