@@ -40,10 +40,6 @@ body{
     position: fixed;
     background-color: #788c94;
     border-radius: 20px;
-    width: 50%;
-    height: 80%;
-    top: 10%;
-    left: 25%;
     overflow: auto;
 }
 .innerPanel{
@@ -204,6 +200,32 @@ body{
         min-width: 170px;
         width: 47%;
         float: left;
+    }
+}
+@media (min-width: 768px) {
+    .panel{
+        width: 50%;
+        left: 25%;
+    }
+}
+@media (max-width: 767px){
+    .panel{
+        width: 100%;
+        left: 0;
+        right: 0;
+    }
+}
+@media (min-height: 768px){
+    .panel{
+        height: 80%;
+        top: 10%;
+    }
+}
+@media (max-height: 767px){
+    .panel{
+        height: 100%;
+        top: 0;
+        bottom: 0;
     }
 }
 @media (min-width: 507px){
