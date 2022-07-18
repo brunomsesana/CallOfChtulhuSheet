@@ -178,8 +178,9 @@ function save() {
                 { type: "text/plain;charset=utf-8" });
     saveAs(blob, n + ".sheet")
 }
-function createSkills(l, t){
-    document.getElementById('skills').innerHTML = '<h2>Perícias</h2>\n<div style="clear: both;"></div>\n<div style="clear: both;" class="centralized container" id="customDDiv">\n<input style="display: inline-block;" class="form-control centralized diceC" type="text" name="custom" id="customd" placeholder="Dados (Ex: 1d4+1d8+5)">\n<button class="btn btn-primary" onclick="RollCustom()">Roll</button>\n</div>'
+function createSkills(l){
+    document.getElementById('skills').hidden = false
+    document.getElementById('skills').innerHTML = '<h2 id="sknam">Perícias</h2>\n<div style="clear: both;"></div>\n<div style="clear: both;" class="centralized container" id="customDDiv">\n<input style="display: inline-block;" class="form-control centralized diceC" type="text" name="custom" id="customd" placeholder="Dados (Ex: 1d4+1d8+5)">\n<button class="btn btn-primary" onclick="RollCustom()">Roll</button>\n</div>'
     var sk;
     var in1 = document.createElement('div')
     in1.className = 'innerWin container sk'
@@ -376,5 +377,99 @@ function createSkills(l, t){
             in4.appendChild(div1)
         }
     }
-    console.log(sk)
+    if (l == "en-us"){
+        document.getElementById('sknam').innerHTML = "Skills"
+        document.getElementById('customd').placeholder = "Dice (E.g. 1d4+1d6)"
+    }
+}
+function createChar(l){
+    // var h2 = document.createElement("h2")
+    // var div1 = document.createElement("div")
+    // var img = document.createElement("img")
+    // div1.style = "width: 20%;"
+    // div1.className = "container innerWin ih"
+    // img.id = "characterimg"
+    // img.src = "https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/fa3a7d93635679.5e699fbf9de8a.jpg"
+    // img.style = "width: 90%;"
+    // var inpimg = document.createElement("input")
+    // inpimg.type = "file"
+    // inpimg.id = "characterimgsel"
+    // inpimg.accept = "image/gif, image/jpeg, image/png"
+    // inpimg.className = "form-control"
+    // inpimg.style = "display: none;"
+    // inpimg.setAttribute("onchange", "img(this)")
+    // var btnimg = document.createElement("input")
+    // btnimg.type = "button"
+    
+    // btnimg.setAttribute("onclick", "document.getElementById('characterimgsel').click();")
+    // btnimg.style = "width: 80%;"
+    // btnimg.className = "btn btn-primary"
+    // if (l == "pt-br"){
+    //     h2.innerHTML = "Caracteristicas"
+    //     btnimg.value = "Procurar"
+    // } else if (l == "en-us"){
+    //     h2.innerHTML = "Characteristics"
+    //     btnimg.value = "Browse"
+    // }
+    // div1.appendChild(img)
+    // div1.appendChild(inpimg)
+    // div1.appendChild(btnimg)
+    document.getElementById("char").hidden = false
+    if (l == "pt-br"){
+
+        document.getElementById("name").placeholder = "Nome do Personagem"
+        document.getElementById("player").placeholder = "Nome do Player"
+        document.getElementById("occupation").placeholder = "Ocupação"
+        document.getElementById("age").placeholder = "Idade"
+        document.getElementById("gen").placeholder = "Gênero"
+        document.getElementById("residence").placeholder = "Residencia"
+        document.getElementById("birthplace").placeholder = "Naturalidade"
+        document.getElementById("strength").innerHTML = "Força:"
+        document.getElementById("constitution").innerHTML = "Constituição:"
+        document.getElementById("size").innerHTML = "Tamanho:"
+        document.getElementById("dexterity").innerHTML = "Destreza:"
+        document.getElementById("appearance").innerHTML = "Aparência:"
+        document.getElementById("education").innerHTML = "Educação:"
+        document.getElementById("inteligence").innerHTML = "Inteligencia:"
+        document.getElementById("power").innerHTML = "Poder:"
+        document.getElementById("appearance2").innerHTML = "Aparência:"
+        document.getElementById("education2").innerHTML = "Educação:"
+        document.getElementById("inteligence2").innerHTML = "Inteligencia:"
+        document.getElementById("power2").innerHTML = "Poder:"
+        document.getElementById("hp").innerHTML = "Pontos de Vida:"
+        document.getElementById("san").innerHTML = "Sanidade:"
+        document.getElementById("mp").innerHTML = "Pontos de Magia:"
+        document.getElementById("luckn").innerHTML = "Sorte:"
+        document.getElementById("btnimg").value = "Procurar"
+    } else if (l == "en-us"){
+        document.getElementById("name").placeholder = "Character Name"
+        document.getElementById("player").placeholder = "Player Name"
+        document.getElementById("occupation").placeholder = "Occupation"
+        document.getElementById("age").placeholder = "Age"
+        document.getElementById("gen").placeholder = "Gender"
+        document.getElementById("residence").placeholder = "Residence"
+        document.getElementById("birthplace").placeholder = "Birthplace"
+        document.getElementById("strength").innerHTML = "Strength:"
+        document.getElementById("constitution").innerHTML = "Constitution:"
+        document.getElementById("size").innerHTML = "Size:"
+        document.getElementById("dexterity").innerHTML = "Dexterity:"
+        document.getElementById("appearance").innerHTML = "Appearance:"
+        document.getElementById("education").innerHTML = "Education:"
+        document.getElementById("inteligence").innerHTML = "Inteligence:"
+        document.getElementById("power").innerHTML = "Power:"
+        document.getElementById("appearance2").innerHTML = "Appearance:"
+        document.getElementById("education2").innerHTML = "Education:"
+        document.getElementById("inteligence2").innerHTML = "Inteligence:"
+        document.getElementById("power2").innerHTML = "Power:"
+        document.getElementById("hp").innerHTML = "Health Points:"
+        document.getElementById("san").innerHTML = "Sanity:"
+        document.getElementById("mp").innerHTML = "Magic Points:"
+        document.getElementById("luckn").innerHTML = "Luck:"
+        document.getElementById("btnimg").value = "Browse"
+    }
+}
+function langu(l, t){
+    createSkills(l)
+    createChar(l)
+    t.hidden = true;
 }
