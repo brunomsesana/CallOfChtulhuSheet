@@ -179,6 +179,7 @@ function save() {
     saveAs(blob, n + ".sheet")
 }
 function createSkills(l){
+    var csks = [];
     document.getElementById('skills').hidden = false
     document.getElementById('skills').innerHTML = '<h2 id="sknam">Perícias</h2>\n<div style="clear: both;"></div>\n<div style="clear: both;" class="centralized container" id="customDDiv">\n<input style="display: inline-block;" class="form-control centralized diceC" type="text" name="custom" id="customd" placeholder="Dados (Ex: 1d4+1d8+5)">\n<button class="btn btn-primary" onclick="RollCustom()">Roll</button>\n</div>'
     var sk;
@@ -338,6 +339,8 @@ function createSkills(l){
             inp.className = 'form-control inp'
             inp.style = 'float: left; margin-right: 10px;'
             inp.placeholder = '(' + sk[i][0] + ')'
+            csks[csks.length] = "+1"
+            inp.id = "csk" + csks.length;
             div3.appendChild(inp)
         } else {
             var h5 = document.createElement('h5')
@@ -417,13 +420,13 @@ function createChar(l){
     document.getElementById("char").hidden = false
     if (l == "pt-br"){
 
-        document.getElementById("name").placeholder = "Nome do Personagem"
-        document.getElementById("player").placeholder = "Nome do Player"
-        document.getElementById("occupation").placeholder = "Ocupação"
-        document.getElementById("age").placeholder = "Idade"
-        document.getElementById("gen").placeholder = "Gênero"
-        document.getElementById("residence").placeholder = "Residencia"
-        document.getElementById("birthplace").placeholder = "Naturalidade"
+        document.getElementById("char1").placeholder = "Nome do Personagem"
+        document.getElementById("char2").placeholder = "Nome do Player"
+        document.getElementById("char3").placeholder = "Ocupação"
+        document.getElementById("char4").placeholder = "Gênero"
+        document.getElementById("char5").placeholder = "Idade"
+        document.getElementById("char6").placeholder = "Residencia"
+        document.getElementById("char7").placeholder = "Naturalidade"
         document.getElementById("strength").innerHTML = "Força:"
         document.getElementById("constitution").innerHTML = "Constituição:"
         document.getElementById("size").innerHTML = "Tamanho:"
@@ -442,13 +445,13 @@ function createChar(l){
         document.getElementById("luckn").innerHTML = "Sorte:"
         document.getElementById("btnimg").value = "Procurar"
     } else if (l == "en-us"){
-        document.getElementById("name").placeholder = "Character Name"
-        document.getElementById("player").placeholder = "Player Name"
-        document.getElementById("occupation").placeholder = "Occupation"
-        document.getElementById("age").placeholder = "Age"
-        document.getElementById("gen").placeholder = "Gender"
-        document.getElementById("residence").placeholder = "Residence"
-        document.getElementById("birthplace").placeholder = "Birthplace"
+        document.getElementById("char1").placeholder = "Character Name"
+        document.getElementById("char2").placeholder = "Player Name"
+        document.getElementById("char3").placeholder = "Occupation"
+        document.getElementById("char4").placeholder = "Gender"
+        document.getElementById("char5").placeholder = "Age"
+        document.getElementById("char6").placeholder = "Residence"
+        document.getElementById("char7").placeholder = "Birthplace"
         document.getElementById("strength").innerHTML = "Strength:"
         document.getElementById("constitution").innerHTML = "Constitution:"
         document.getElementById("size").innerHTML = "Size:"
@@ -472,4 +475,47 @@ function langu(l, t){
     createSkills(l)
     createChar(l)
     t.hidden = true;
+}
+function translateSk(){
+    var skills;
+    var cskills;
+    for (var i = 0; i < 60; i++){
+        if (skills){
+            skills += "/" + document.getElementById("sk" + i).value
+        } else {
+            skills = "Skills: " + document.getElementById("sk" + i).value
+        }
+    console.log("sk" + i)
+    }
+    for (var i = 1; i < 20; i++){
+        if (cskills){
+            cskills += "/" + document.getElementById("csk" + i).value
+        } else {
+            cskills = "Custom Skills Names: " + document.getElementById("csk" + i).value
+        }
+    }
+    var General = skills + "-" + cskills
+    console.log(General.split("-")[0].split(": ")[1].split("/"))
+    console.log(General.split("-")[1].split(": ")[1].split("/"))
+}
+function translateChar(){
+    var chars;
+    var atts;
+    var cpoints = "Current points: " + document.getElementById('curhp').value + '/' + document.getElementById('cursan').value + '/' + document.getElementById('curmp').value + '/' + document.getElementById('luck').value;
+    var mpoints = "Max points: " + document.getElementById('maxhp').value + '/' + document.getElementById('maxsan').value + '/' + document.getElementById('maxmp').value;
+    for (var i = 1; i <= 7; i++){
+        if (chars){
+            chars += "/" + document.getElementById("char" + i).value
+        } else {
+            chars = "Characteristics: " + document.getElementById("char" + i).value
+        }
+    }
+    for (var i = 1; i <= 8; i++){
+        if (atts){
+            atts += "/" + document.getElementById("att" + i).value
+        } else {
+            atts = "Attributes: " + document.getElementById("att" + i).value
+        }
+    }
+    console.log(chars + '-' + atts + '-' + cpoints + '-' + mpoints)
 }

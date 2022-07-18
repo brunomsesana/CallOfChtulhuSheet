@@ -83,6 +83,9 @@ body{
     transform: translate(-50%, -50%);
     font-size: calc(20px + 4vw);;
 }
+.login{
+    width: fit-content;
+}
 /* #region Medias */
 @media (min-width: 992px) {
     .l10{

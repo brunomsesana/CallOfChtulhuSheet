@@ -4,19 +4,21 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/style.css">
     <title>Ficha Call of Cthulhu</title>
 </head>
 <body>
     <div class="container shadow centralized pad20 window">
         <h1>Ficha Automatica de Call of Cthulhu</h1>
         <p>Disclaimer: this is a fanmade website to make the sheet easier to use</p>
+        <a href="/login">Logout</a>
     </div>
     <div class="empty">
 
     </div>
     <button class="btn btn-primary" style="position: fixed; right: 10px; top: 10px;" onclick="save()">Save</button>
+    <button class="btn btn-primary" style="position: fixed; right: 10px; top: 40px;" onclick="translateChar()">Translate</button>
     <input type="file" id="loadsel" accept=".sheet" class="form-control" style="display: none;" onchange="load(this)">
     <input type="button" value="Load" onclick="document.getElementById('loadsel').click();" style="position: fixed; right: 70px; top: 10px;" class="btn btn-primary"/>
     <div class="container shadow pad20 centralized window" id="char" hidden>
@@ -27,15 +29,15 @@
             <input id="btnimg" type="button" value="Browse" onclick="document.getElementById('characterimgsel').click();" style="width: 80%;" class="btn btn-primary"/>
         </div>
         <div class="container innerWin th attC">
-            <input onchange="cvalue(this)" type="text" name="name" id="name" placeholder="Nome do Personagem" class="form-control" style="float: left; width: 50%;">
-            <input onchange="cvalue(this)" type="text" name="player" id="player" placeholder="Nome do Player" class="form-control" style="float: right; width: 50%;">
+            <input onchange="cvalue(this)" type="text" name="name" id="char1" placeholder="Nome do Personagem" class="form-control" style="float: left; width: 50%;">
+            <input onchange="cvalue(this)" type="text" name="player" id="char2" placeholder="Nome do Player" class="form-control" style="float: right; width: 50%;">
             <div class="pad20"></div>
-            <input onchange="cvalue(this)" type="text" name="occupation" id="occupation" style="float: left; width: 50%;" class="form-control" placeholder="Ocupação">
-            <input onchange="cvalue(this)" type="text" name="gen" id="gen" style="float: right; width: 25%;" placeholder="Gênero" class="form-control">
-            <input onchange="cvalue(this)" type="text" name="age" id="age" style="float: right; width: 25%;" placeholder="Idade" class="form-control">
+            <input onchange="cvalue(this)" type="text" name="occupation" id="char3" style="float: left; width: 50%;" class="form-control" placeholder="Ocupação">
+            <input onchange="cvalue(this)" type="text" name="gen" id="char4" style="float: right; width: 25%;" placeholder="Gênero" class="form-control">
+            <input onchange="cvalue(this)" type="text" name="age" id="char5" style="float: right; width: 25%;" placeholder="Idade" class="form-control">
             <div class="pad20"></div>
-            <input onchange="cvalue(this)" type="text" name="residence" id="residence" placeholder="Residencia" style="float:left; width:50%;" class="form-control">
-            <input onchange="cvalue(this)" type="text" name="birthplace" id="birthplace" style="float: right; width: 50%;" placeholder="Naturalidade" class="form-control">
+            <input onchange="cvalue(this)" type="text" name="residence" id="char6" placeholder="Residencia" style="float:left; width:50%;" class="form-control">
+            <input onchange="cvalue(this)" type="text" name="birthplace" id="char7" style="float: right; width: 50%;" placeholder="Naturalidade" class="form-control">
             <div style="clear: both;"></div>
         </div>
         <div style="overflow-x: auto;" class="divsmc container innerWin th attC">
@@ -45,25 +47,25 @@
                     <div style="float: left;">
                         <h5 style="margin-left: 10px; float: left; margin-right: 10px;" id="strength">Força:</h5>
                         <div class="clearAtt" style="clear: both;"></div>
-                        <input onchange="cvalue(this)" type="number" name="str" id="str" class="form-control inp" style="float: left; width: 12.5%;">
+                        <input onchange="cvalue(this)" type="number" name="str" id="att1" class="form-control inp" style="float: left; width: 12.5%;">
                         <button style="float: left; margin-left: 5px;" class="btn btn-primary" onclick="Roll(this)">Roll</button>
                     </div>
                     <div style="float: left;">
                         <h5 style="margin-left: 10px; float: left; margin-right: 10px;" id="constitution">Constituição:</h5>
                         <div class="clearAtt" style="clear: both;"></div>
-                        <input onchange="cvalue(this)" type="number" name="con" id="con" class="form-control inp" style="float: left; width: 12.5%;">
+                        <input onchange="cvalue(this)" type="number" name="con" id="att2" class="form-control inp" style="float: left; width: 12.5%;">
                         <button style="float: left; margin-left: 5px;" class="btn btn-primary" onclick="Roll(this)">Roll</button>
                     </div>
                     <div style="float: left;">
                         <h5 style="margin-left: 10px; float: left; margin-right: 10px;" id="size">Tamanho:</h5>
                         <div class="clearAtt" style="clear: both;"></div>
-                        <input onchange="cvalue(this)" type="number" name="siz" id="siz" class="form-control inp" style="float: left; width: 12.5%;">
+                        <input onchange="cvalue(this)" type="number" name="siz" id="att3" class="form-control inp" style="float: left; width: 12.5%;">
                         <button style="float: left; margin-left: 5px;" class="btn btn-primary" onclick="Roll(this)">Roll</button>
                     </div>
                     <div style="float: left;">
                         <h5 style="margin-left: 10px; float: left; margin-right: 10px;" id="dexterity">Destreza:</h5>
                         <div class="clearAtt" style="clear: both;"></div>
-                        <input onchange="cvalue(this)" type="number" name="dex" id="dex" class="form-control inp" style="float: left; width: 12.5%;">
+                        <input onchange="cvalue(this)" type="number" name="dex" id="att4" class="form-control inp" style="float: left; width: 12.5%;">
                         <button style="float: left; margin-left: 5px;" class="btn btn-primary" onclick="Roll(this)">Roll</button>
                     </div>
     
@@ -73,28 +75,28 @@
                         <h5 class="clearAtt" style="margin-left: 10px; float: right; margin-right: 10px;" id="appearance">Aparencia:</h5>
                         <div class="clearAtt" style="clear: both;"></div>
                         <button style="float: right; margin-left: 5px;" class="btn btn-primary" onclick="Roll(this)">Roll</button>
-                        <input onchange="cvalue(this)" type="number" name="app" id="app" class="form-control inp" style="float: right; width: 12.5%;">
+                        <input onchange="cvalue(this)" type="number" name="app" id="att5" class="form-control inp" style="float: right; width: 12.5%;">
                         <h5 class="rightAtt" style="margin-left: 10px; float: right; margin-right: 10px;" id="appearance2">Aparencia:</h5>
                     </div>
                     <div style="float: right;">
                         <h5 class="clearAtt" style="margin-left: 10px; float: right; margin-right: 10px;" id="education">Educação:</h5>
                         <div class="clearAtt" style="clear: both;"></div>
                         <button style="float: right; margin-left: 5px;" class="btn btn-primary" onclick="Roll(this)">Roll</button>
-                        <input onchange="cvalue(this)" type="number" name="edu" id="edu" class="form-control inp" style="float: right; width: 12.5%;">
+                        <input onchange="cvalue(this)" type="number" name="edu" id="att6" class="form-control inp" style="float: right; width: 12.5%;">
                         <h5 class="rightAtt" style="margin-left: 10px; float: right; margin-right: 10px;" id="education2">Educação:</h5>
                     </div>
                     <div style="float: right;">
                         <h5 class="clearAtt" style="margin-left: 10px; float: right; margin-right: 10px;" id="inteligence">Inteligencia:</h5>
                         <div class="clearAtt" style="clear: both;"></div>
                         <button style="float: right; margin-left: 5px;" class="btn btn-primary" onclick="Roll(this)">Roll</button>
-                        <input onchange="cvalue(this)" type="number" name="int" id="int" class="form-control inp" style="float: right; width: 12.5%;">
+                        <input onchange="cvalue(this)" type="number" name="int" id="att7" class="form-control inp" style="float: right; width: 12.5%;">
                         <h5 class="rightAtt" style="margin-left: 10px; float: right; margin-right: 10px;" id="inteligence2">Inteligencia:</h5>
                     </div>
                     <div style="float: right;">
                         <h5 class="clearAtt" style="margin-left: 10px; float: right; margin-right: 10px;" id="power">Poder:</h5>
                         <div class="clearAtt" style="clear: both;"></div>
                         <button style="float: right; margin-left: 5px;" class="btn btn-primary" onclick="Roll(this)">Roll</button>
-                        <input onchange="cvalue(this)" type="number" name="pow" id="pow" class="form-control inp" style="float: right; width: 12.5%;">
+                        <input onchange="cvalue(this)" type="number" name="pow" id="att8" class="form-control inp" style="float: right; width: 12.5%;">
                         <h5 class="rightAtt" style="margin-left: 10px; float: right; margin-right: 10px;" id="power2">Poder:</h5>
                     </div>
                 </div>
