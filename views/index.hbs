@@ -18,9 +18,23 @@
 
     </div>
     <button class="btn btn-primary" style="position: fixed; right: 10px; top: 10px;" onclick="save()">Save</button>
-    <button class="btn btn-primary" style="position: fixed; right: 10px; top: 40px;" onclick="translateChar()">Translate</button>
+    <button class="btn btn-primary" style="position: fixed; right: 10px; top: 40px;" onclick="console.log(translateChar())">Translate</button>
     <input type="file" id="loadsel" accept=".sheet" class="form-control" style="display: none;" onchange="load(this)">
     <input type="button" value="Load" onclick="document.getElementById('loadsel').click();" style="position: fixed; right: 70px; top: 10px;" class="btn btn-primary"/>
+    <div class="container shadow pad20 centralized window">
+        <select class="form-select" id="lsel">
+            <option value="" hidden selected>Language</option>
+            <option value="pt-br">Português Brasileiro</option>
+            <option value="en-us">English</option>
+        </select>
+        <select name="sheetnames" id="sheetnames" class="form-select">
+            <option value="new" selected>New Sheet</option>
+        </select>
+        <button onclick="if (document.getElementById('lsel').value) {langu(document.getElementById('lsel').value, this.parentNode)}" class="btn btn-primary">Choose</button>
+    </div>
+    <div class="empty">
+        
+    </div>
     <div class="container shadow pad20 centralized window" id="char" hidden>
         <h2>Caracteristicas</h2>
         <div style="width: 20%;" class="container innerWin ih">
@@ -108,44 +122,33 @@
             <div style="min-width: 330px;">
                 <div style="float: left;">
                     <h5 style="float: left; margin-right: 10px;" id="hp">Pontos de Vida:</h5>
-                    <input onchange="cvalue(this)" type="number" name="curhp" id="curhp" class="form-control inp l10">
+                    <input onchange="cvalue(this)" type="number" name="cur1" id="cur1" class="form-control inp l10">
                     <h5 style="float: left; width: 1%;" class="btn">/</h5>
-                    <input onchange="cvalue(this)" style="margin-right: 10px;" type="number" name="maxhp" id="maxhp" class="form-control inp l10">
+                    <input onchange="cvalue(this)" style="margin-right: 10px;" type="number" name="max1" id="max1" class="form-control inp l10">
                 </div>
                 <div style="float: left; min-width: 330px;">
                     <h5 style="float: left; margin-right: 10px;" id="san">Sanidade:</h5>
                     <div>
-                        <input onchange="cvalue(this)" type="number" name="cursan" id="cursan" class="form-control inp l10" style="margin-left: 2%;">
+                        <input onchange="cvalue(this)" type="number" name="cur2" id="cur2" class="form-control inp l10" style="margin-left: 2%;">
                     </div>
                     <h5 style="float: left; width: 1%;" class="btn">/</h5>
-                    <input onchange="cvalue(this)" type="number" name="maxsan" id="maxsan" class="form-control inp l10" style="display:inline-block;">
-                    <button style="float: left; margin-left: 5px;" class="btn btn-primary" onclick="Roll(document.getElementById('cursan'))">Roll</button>
+                    <input onchange="cvalue(this)" type="number" name="max2" id="max2" class="form-control inp l10" style="display:inline-block;">
+                    <button style="float: left; margin-left: 5px;" class="btn btn-primary" onclick="Roll(document.getElementById('cur2'))">Roll</button>
                 </div>
                 <div style="float: left;">
                     <h5 style="float: left; margin-right: 10px;" id="mp">Pontos de Magia:</h5>
-                    <input onchange="cvalue(this)" type="number" name="curmp" id="curmp" class="form-control inp l10">
+                    <input onchange="cvalue(this)" type="number" name="cur3" id="cur3" class="form-control inp l10">
                     <h5 style="float: left; width: 1%;" class="btn">/</h5>
-                    <input onchange="cvalue(this)" type="number" name="maxmp" id="maxmp" class="form-control inp l10" style="margin-right: 2%;">
+                    <input onchange="cvalue(this)" type="number" name="max3" id="max3" class="form-control inp l10" style="margin-right: 2%;">
                 </div>
                 <div style="float:left;">
                     <h5 style="float: left; margin-right: 10px;" id="luckn">Sorte:</h5>
-                    <input onchange="cvalue(this)" type="number" name="luck" id="luck" class="form-control inp l25">
-                    <button style="float: left; margin-left: 5px;" class="btn btn-primary" onclick="Roll(document.getElementById('luck'))">Roll</button>
+                    <input onchange="cvalue(this)" type="number" name="cur4" id="cur4" class="form-control inp l25">
+                    <button style="float: left; margin-left: 5px;" class="btn btn-primary" onclick="Roll(document.getElementById('cur4'))">Roll</button>
                 </div>
             </div>
             <div style="clear: both;"></div>
         </div>
-    </div>
-    <div class="empty">
-        
-    </div>
-    <div class="container shadow pad20 centralized window">
-        <select class="form-select" id="lsel">
-            <option value="" disabled hidden selected>Language</option>
-            <option value="pt-br">Português Brasileiro</option>
-            <option value="en-us">English</option>
-        </select>
-        <button onclick="langu(document.getElementById('lsel').value, this.parentNode)" class="btn btn-primary">Choose</button>
     </div>
     <div class="empty">
         
@@ -158,6 +161,7 @@
             <button class="btn btn-primary" onclick="RollCustom()">Roll</button>
         </div>
     </div>
+    <input type="text" name="sheetid" id="sheetid" value="new" hidden>
     <div id="panel" class="panel container shadow" hidden>
         <div class="innerPanel container">
             <img id="rollimg" class="center" src="https://i.pinimg.com/originals/0f/f2/90/0ff290c5e91a3025d77a3905e03818eb.png" alt="">
@@ -185,8 +189,16 @@
             reader.readAsText(t.files[0]);
         }
     </script>
+    <script>
+        sheets = [];
+    </script>
+    {{#each sheets}}
+    <script>
+        sheets[{{@index}}] = '{{this}}'
+    </script>
+    {{/each}}
     <script src="FileSaver.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/chapelr/dice-notation@latest/dist/dice.min.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="index.js"></script>
 </body>
 </html>
