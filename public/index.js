@@ -168,20 +168,21 @@ function cvalue(t){
     t.setAttribute('value', t.value)
 }
 function save() {
-    var n;
-    if (document.getElementById('name').value != ''){
-        n = document.getElementById('name').value
-    } else {
-        n = "CoC"
-    }
-    var blob = new Blob([document.body.innerHTML],
-                { type: "text/plain;charset=utf-8" });
-    saveAs(blob, n + ".sheet")
+    // var n;
+    // if (document.getElementById('name').value != ''){
+    //     n = document.getElementById('name').value
+    // } else {
+    //     n = "CoC"
+    // }
+    // var blob = new Blob([document.body.innerHTML],
+    //             { type: "text/plain;charset=utf-8" });
+    // saveAs(blob, n + ".sheet")
+    $.post('/save', {skills: translateSk(), characteristics: translateChar(), sheetid: document.getElementById('sheetid').value, img: document.getElementById('characterimg').getAttribute('src').toString()})
 }
 function createSkills(l){
     var csks = [];
+    document.getElementById('skills').innerHTML = '<h2 id="sknam">Perícias</h2><div style="clear: both;"></div><div style="clear: both;" class="centralized container" id="customDDiv"><input style="display: inline-block;" class="form-control centralized diceC" type="text" name="custom" id="customd" placeholder="Dados (Ex: 1d4+1d8+5)"><button class="btn btn-primary" onclick="RollCustom()">Roll</button></div>'
     document.getElementById('skills').hidden = false
-    document.getElementById('skills').innerHTML = '<h2 id="sknam">Perícias</h2>\n<div style="clear: both;"></div>\n<div style="clear: both;" class="centralized container" id="customDDiv">\n<input style="display: inline-block;" class="form-control centralized diceC" type="text" name="custom" id="customd" placeholder="Dados (Ex: 1d4+1d8+5)">\n<button class="btn btn-primary" onclick="RollCustom()">Roll</button>\n</div>'
     var sk;
     var in1 = document.createElement('div')
     in1.className = 'innerWin container sk'
@@ -196,128 +197,128 @@ function createSkills(l){
     in4.className = 'innerWin container sk'
     document.getElementById('skills').insertBefore(in4, document.getElementById('customDDiv'))
     var skpt = [
-        ["Antropologia", 1, false], 
-        ["Armas de Fogo (Pistolas)", 20, false], 
-        ["Armas de Fogo (Rifles)", 25, false],
-        ["Armas 1", 25, true],
-        ["Arqueologia", 1, false],
-        ["Arremessar", 20, false],
-        ["Arte/Ofício 1", 5, true],
-        ["Arte/Ofício 2", 5, true],
-        ["Arte/Ofício 3", 5, true],
-        ["Avaliação", 5, false],
-        ["Cavalgar", 5, false],
-        ["Charme", 15, false],
-        ["Chaveiro", 1, false],
-        ["Ciência", 1, false],
-        ["Ciência 1", 1, true],
-        ["Ciência 2", 1, true],
-        ["Consertos Elétricos", 10, false],
-        ["Consertos Mecânicos", 5, false],
-        ["Contabilidade", 5, false],
-        ["Direito", 5, false],
-        ["Dirigir Automóvel", 20, false],
-        ["Disfarce", 5, false],
-        ["Encontrar", 25, false],
-        ["Idioma (Nativo)", 0, true],
-        ["Escalar", 20, false],
-        ["Escutar", 20, false],
-        ["Esquivar", 0, false],
-        ["Furtividade", 20, false],
-        ["História", 5, false],
-        ["Idioma 1", 1, true],
-        ["Idioma 2", 1, true],
-        ["Idioma 3", 1, true],
-        ["Intimidação", 15, false],
-        ["Lábia", 5, false],
-        ["Luta (Briga)", 25, false],
-        ["Luta 1", 25, true],
-        ["Luta 2", 25, true],
-        ["Medicina", 1, false],
-        ["Mundo Natural", 10, false],
-        ["Mythos de Cthulhu", 0, false],
-        ["Natação", 20, false],
-        ["Navegação", 10, false],
-        ["Nível de Crédito", 0, false],
-        ["Ocultismo", 5, false],
-        ["Operar Maquinário Pesado", 1, false],
-        ["Persuasão", 10, false],
-        ["Pilotar", 1, true],
-        ["Prestidigitação", 10, false],
-        ["Primeiros Socorros", 30, false],
-        ["Psicanálise", 1, false],
-        ["Psicologia", 10, false],
-        ["Rastrear", 10, false],
-        ["Saltar", 20, false],
-        ["Sobrevivência", 10, true],
-        ["Usar Bibliotecas", 20, false],
-        ["Custom", 0, true],
-        ["Custom", 0, true],
-        ["Custom", 0, true],
-        ["Custom", 0, true],
-        ["Custom", 0, true]
+        ["Antropologia", 1, false, 2], 
+        ["Armas de Fogo (Pistolas)", 20, false, 20], 
+        ["Armas de Fogo (Rifles)", 25, false, 21],
+        ["Armas 1", 25, true, 22],
+        ["Arqueologia", 1, false, 4],
+        ["Arremessar", 20, false, 54],
+        ["Arte/Ofício 1", 5, true, 5],
+        ["Arte/Ofício 2", 5, true, 6],
+        ["Arte/Ofício 3", 5, true, 7],
+        ["Avaliação", 5, false, 3],
+        ["Cavalgar", 5, false, 45],
+        ["Charme", 15, false, 8],
+        ["Chaveiro", 1, false, 34],
+        ["Ciência", 1, false, 46],
+        ["Ciência 1", 1, true, 47],
+        ["Ciência 2", 1, true, 48],
+        ["Consertos Elétricos", 10, false, 15],
+        ["Consertos Mecânicos", 5, false, 35],
+        ["Contabilidade", 5, false, 1],
+        ["Direito", 5, false, 31],
+        ["Dirigir Automóvel", 20, false, 14],
+        ["Disfarce", 5, false, 12],
+        ["Encontrar", 25, false, 50],
+        ["Escalar", 20, false, 9],
+        ["Escutar", 20, false, 33],
+        ["Esquivar", 0, false, 13],
+        ["Furtividade", 20, false, 51],
+        ["História", 5, false, 24],
+        ["Idioma (Nativo)", 0, true, 27],
+        ["Idioma 1", 1, true, 28],
+        ["Idioma 2", 1, true, 29],
+        ["Idioma 3", 1, true, 30],
+        ["Intimidação", 15, false, 25],
+        ["Lábia", 5, false, 16],
+        ["Luta (Briga)", 25, false, 17],
+        ["Luta 1", 25, true, 18],
+        ["Luta 2", 25, true, 19],
+        ["Medicina", 1, false, 36],
+        ["Mundo Natural", 10, false, 37],
+        ["Mythos de Cthulhu", 0, false, 11],
+        ["Natação", 20, false, 53],
+        ["Navegação", 10, false, 38],
+        ["Nível de Crédito", 0, false, 10],
+        ["Ocultismo", 5, false, 39],
+        ["Operar Maquinário Pesado", 1, false, 40],
+        ["Persuasão", 10, false, 41],
+        ["Pilotar", 1, true, 42],
+        ["Prestidigitação", 10, false, 49],
+        ["Primeiros Socorros", 30, false, 23],
+        ["Psicanálise", 1, false, 43],
+        ["Psicologia", 10, false, 44],
+        ["Rastrear", 10, false, 55],
+        ["Saltar", 20, false, 26],
+        ["Sobrevivência", 10, true, 52],
+        ["Usar Bibliotecas", 20, false, 32],
+        ["Personalizado", 0, true, 56],
+        ["Personalizado", 0, true, 57],
+        ["Personalizado", 0, true, 58],
+        ["Personalizado", 0, true, 59],
+        ["Personalizado", 0, true, 60]
     ];
     var sken = [
-        ["Accounting", 5, false],
-        ["Anthropology", 1, false], 
-        ["Appraise", 5, false],
-        ["Archaeology", 1, false],
-        ["Art/Craft 1", 5, true],
-        ["Art/Craft 2", 5, true],
-        ["Art/Craft 3", 5, true],
-        ["Charm", 15, false],
-        ["Climb", 20, false],
-        ["Credit Rating", 0, false],
-        ["Cthulhu Mythos", 0, false],
-        ["Disguise", 5, false],
-        ["Dodge", 0, false],
-        ["Drive Automobile", 20, false],
-        ["Electric Repair", 10, false],
-        ["Fast Talk", 5, false],
-        ["Fighting (Brawl)", 25, false],
-        ["Fight 1", 25, true],
-        ["Fight 2", 25, true],
-        ["Firearms (Handguns)", 20, false], 
-        ["Firearms (Rifles)", 25, false],
-        ["Firearms 1", 25, true],
-        ["First Aid", 30, false],
-        ["History", 5, false],
-        ["Intimidate", 15, false],
-        ["Jump", 20, false],
-        ["(Own) Language", 0, true],
-        ["Language 1", 1, true],
-        ["Language 2", 1, true],
-        ["Language 3", 1, true],
-        ["Law", 5, false],
-        ["Library Use", 20, false],
-        ["Listen", 20, false],
-        ["Locksmith", 1, false],
-        ["Mechanical Repair", 5, false],
-        ["Medicine", 1, false],
-        ["Natural World", 10, false],
-        ["Navigate", 10, false],
-        ["Occult", 5, false],
-        ["Operate Heavy Machine", 1, false],
-        ["Persuade", 10, false],
-        ["Pilot", 1, true],
-        ["Psychanalysis", 1, false],
-        ["Psychology", 10, false],
-        ["Ride", 5, false],
-        ["Science", 1, false],
-        ["Science 1", 1, true],
-        ["Science 2", 1, true],
-        ["Sleight of Hand", 10, false],
-        ["Spot Hidden", 25, false],
-        ["Stealth", 20, false],
-        ["Survival", 10, true],
-        ["Swim", 20, false],
-        ["Throw", 20, false],
-        ["Track", 10, false],
-        ["Custom", 0, true],
-        ["Custom", 0, true],
-        ["Custom", 0, true],
-        ["Custom", 0, true],
-        ["Custom", 0, true]
+        ["Accounting", 5, false, 1],
+        ["Anthropology", 1, false, 2], 
+        ["Appraise", 5, false, 3],
+        ["Archaeology", 1, false, 4],
+        ["Art/Craft 1", 5, true, 5],
+        ["Art/Craft 2", 5, true, 6],
+        ["Art/Craft 3", 5, true, 7],
+        ["Charm", 15, false, 8],
+        ["Climb", 20, false, 9],
+        ["Credit Rating", 0, false, 10],
+        ["Cthulhu Mythos", 0, false, 11],
+        ["Disguise", 5, false, 12],
+        ["Dodge", 0, false, 13],
+        ["Drive Automobile", 20, false, 14],
+        ["Electric Repair", 10, false, 15],
+        ["Fast Talk", 5, false, 16],
+        ["Fighting (Brawl)", 25, false, 17],
+        ["Fight 1", 25, true, 18],
+        ["Fight 2", 25, true, 19],
+        ["Firearms (Handguns)", 20, false, 20], 
+        ["Firearms (Rifles)", 25, false, 21],
+        ["Firearms 1", 25, true, 22],
+        ["First Aid", 30, false, 23],
+        ["History", 5, false, 24],
+        ["Intimidate", 15, false, 25],
+        ["Jump", 20, false, 26],
+        ["(Own) Language", 0, true, 27],
+        ["Language 1", 1, true, 28],
+        ["Language 2", 1, true, 29],
+        ["Language 3", 1, true, 30],
+        ["Law", 5, false, 31],
+        ["Library Use", 20, false, 32],
+        ["Listen", 20, false, 33],
+        ["Locksmith", 1, false, 34],
+        ["Mechanical Repair", 5, false, 35],
+        ["Medicine", 1, false, 36],
+        ["Natural World", 10, false, 37],
+        ["Navigate", 10, false, 38],
+        ["Occult", 5, false, 39],
+        ["Operate Heavy Machine", 1, false, 40],
+        ["Persuade", 10, false, 41],
+        ["Pilot", 1, true, 42],
+        ["Psychanalysis", 1, false, 43],
+        ["Psychology", 10, false, 44],
+        ["Ride", 5, false, 45],
+        ["Science", 1, false, 46],
+        ["Science 1", 1, true, 47],
+        ["Science 2", 1, true, 48],
+        ["Sleight of Hand", 10, false, 49],
+        ["Spot Hidden", 25, false, 50],
+        ["Stealth", 20, false, 51],
+        ["Survival", 10, true, 52],
+        ["Swim", 20, false, 53],
+        ["Throw", 20, false, 54],
+        ["Track", 10, false, 55],
+        ["Custom", 0, true, 56],
+        ["Custom", 0, true, 57],
+        ["Custom", 0, true, 58],
+        ["Custom", 0, true, 59],
+        ["Custom", 0, true, 60]
     ];
     if (l == 'pt-br'){
         sk = skpt;
@@ -326,7 +327,7 @@ function createSkills(l){
     }
     for (var i = 0; i < sk.length; i++){
         var div1 = document.createElement('div')
-        div1.setAttribute('name', "sk" + i)
+        div1.setAttribute('name', "sk" + sk[i][3])
         div1.style = "margin-bottom: 10px; padding: 10px; overflow-x: auto;"
         div1.className = 'container ininnerWin'
         var div2 = document.createElement('div')
@@ -357,8 +358,8 @@ function createSkills(l){
         var inp2 = document.createElement('input')
         inp2.setAttribute('onchange', 'cvalue(this)')
         inp2.type = 'number'
-        inp2.name = 'sk' + i
-        inp2.id = 'sk' + i
+        inp2.name = 'sk' + sk[i][3]
+        inp2.id = 'sk' + sk[i][3]
         inp2.className = 'form-control inp'
         inp2.style = 'float: right; width: 10%;'
         inp2.value = sk[i][1]
@@ -386,37 +387,6 @@ function createSkills(l){
     }
 }
 function createChar(l){
-    // var h2 = document.createElement("h2")
-    // var div1 = document.createElement("div")
-    // var img = document.createElement("img")
-    // div1.style = "width: 20%;"
-    // div1.className = "container innerWin ih"
-    // img.id = "characterimg"
-    // img.src = "https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/fa3a7d93635679.5e699fbf9de8a.jpg"
-    // img.style = "width: 90%;"
-    // var inpimg = document.createElement("input")
-    // inpimg.type = "file"
-    // inpimg.id = "characterimgsel"
-    // inpimg.accept = "image/gif, image/jpeg, image/png"
-    // inpimg.className = "form-control"
-    // inpimg.style = "display: none;"
-    // inpimg.setAttribute("onchange", "img(this)")
-    // var btnimg = document.createElement("input")
-    // btnimg.type = "button"
-    
-    // btnimg.setAttribute("onclick", "document.getElementById('characterimgsel').click();")
-    // btnimg.style = "width: 80%;"
-    // btnimg.className = "btn btn-primary"
-    // if (l == "pt-br"){
-    //     h2.innerHTML = "Caracteristicas"
-    //     btnimg.value = "Procurar"
-    // } else if (l == "en-us"){
-    //     h2.innerHTML = "Characteristics"
-    //     btnimg.value = "Browse"
-    // }
-    // div1.appendChild(img)
-    // div1.appendChild(inpimg)
-    // div1.appendChild(btnimg)
     document.getElementById("char").hidden = false
     if (l == "pt-br"){
 
@@ -474,48 +444,94 @@ function createChar(l){
 function langu(l, t){
     createSkills(l)
     createChar(l)
-    t.hidden = true;
+    console.log(sheets[document.getElementById('sheetnames').value - 2])
+    if (document.getElementById('sheetnames').value != "new"){
+        for (var i = 1; i <= 60; i++){
+            document.getElementById('sk' + i).value = sheets[document.getElementById('sheetnames').value - 1].split('&#x3D;9-&#x3D;9--')[0].split(':::')[1].split('/0-0/')[i-1]
+        }
+        for (var i = 1; i <= 19; i++){
+            document.getElementById('csk' + i).value = sheets[document.getElementById('sheetnames').value - 1].split('&#x3D;9-&#x3D;9--')[1].split(':::')[1].split('/0-0/')[i-1]
+        }
+        for (var i = 1; i <= 7; i++){
+            document.getElementById('char' + i).value = sheets[document.getElementById('sheetnames').value - 2].split('&#x3D;9-&#x3D;9--')[0].split(':::')[1].split('/0-0/')[i-1]
+        }
+        for (var i = 1; i <= 8; i++){
+            document.getElementById('att' + i).value = sheets[document.getElementById('sheetnames').value - 2].split('&#x3D;9-&#x3D;9--')[1].split(':::')[1].split('/0-0/')[i-1]
+        }
+        for (var i = 1; i <= 4; i++){
+            document.getElementById('cur' + i).value = sheets[document.getElementById('sheetnames').value - 2].split('&#x3D;9-&#x3D;9--')[2].split(':::')[1].split('/0-0/')[i-1]
+        }
+        for (var i = 1; i <= 3; i++){
+            document.getElementById('max' + i).value = sheets[document.getElementById('sheetnames').value - 2].split('&#x3D;9-&#x3D;9--')[3].split(':::')[1].split('/0-0/')[i-1]
+        }
+        // document.getElementById('characterimg').src = sheets[document.getElementById('sheetnames').value + 1]
+        document.getElementById('sheetid').value = sheets[document.getElementById('sheetnames').value]
+    } else {
+        for (var i = 1; i <= 7; i++){
+            document.getElementById('char' + i).value = ''
+        }
+        for (var i = 1; i <= 8; i++){
+            document.getElementById('att' + i).value = ''
+        }
+        for (var i = 1; i <= 4; i++){
+            document.getElementById('cur' + i).value = ''
+        }
+        for (var i = 1; i <= 3; i++){
+            document.getElementById('max' + i).value = ''
+        }
+        document.getElementById('sheetid').value = "new"
+    }
 }
 function translateSk(){
     var skills;
     var cskills;
-    for (var i = 0; i < 60; i++){
+    for (var i = 1; i <= 60; i++){
         if (skills){
-            skills += "/" + document.getElementById("sk" + i).value
+            skills += "/0-0/" + document.getElementById("sk" + i).value
         } else {
-            skills = "Skills: " + document.getElementById("sk" + i).value
+            skills = "Skills:::" + document.getElementById("sk" + i).value
         }
-    console.log("sk" + i)
     }
     for (var i = 1; i < 20; i++){
         if (cskills){
-            cskills += "/" + document.getElementById("csk" + i).value
+            cskills += "/0-0/" + document.getElementById("csk" + i).value
         } else {
-            cskills = "Custom Skills Names: " + document.getElementById("csk" + i).value
+            cskills = "Custom Skills Names:::" + document.getElementById("csk" + i).value
         }
     }
-    var General = skills + "-" + cskills
-    console.log(General.split("-")[0].split(": ")[1].split("/"))
-    console.log(General.split("-")[1].split(": ")[1].split("/"))
+    var general = skills + "=9-=9--" + cskills
+    return general
 }
 function translateChar(){
+    var general;
     var chars;
     var atts;
-    var cpoints = "Current points: " + document.getElementById('curhp').value + '/' + document.getElementById('cursan').value + '/' + document.getElementById('curmp').value + '/' + document.getElementById('luck').value;
-    var mpoints = "Max points: " + document.getElementById('maxhp').value + '/' + document.getElementById('maxsan').value + '/' + document.getElementById('maxmp').value;
+    var cpoints = "Current points:::" + document.getElementById('cur1').value + '/0-0/' + document.getElementById('cur2').value + '/0-0/' + document.getElementById('cur3').value + '/0-0/' + document.getElementById('cur4').value;
+    var mpoints = "Max points:::" + document.getElementById('max1').value + '/0-0/' + document.getElementById('max2').value + '/0-0/' + document.getElementById('max3').value;
     for (var i = 1; i <= 7; i++){
         if (chars){
-            chars += "/" + document.getElementById("char" + i).value
+            chars += "/0-0/" + document.getElementById("char" + i).value
         } else {
-            chars = "Characteristics: " + document.getElementById("char" + i).value
+            chars = "Characteristics:::" + document.getElementById("char" + i).value
         }
     }
     for (var i = 1; i <= 8; i++){
         if (atts){
-            atts += "/" + document.getElementById("att" + i).value
+            atts += "/0-0/" + document.getElementById("att" + i).value
         } else {
-            atts = "Attributes: " + document.getElementById("att" + i).value
+            atts = "Attributes:::" + document.getElementById("att" + i).value
         }
     }
-    console.log(chars + '-' + atts + '-' + cpoints + '-' + mpoints)
+    general = chars + '=9-=9--' + atts + '=9-=9--' + cpoints + '=9-=9--' + mpoints
+    return general;
+}
+createopts()
+function createopts(){
+    for (var i = 2; i < sheets.length; i+=4){
+        console.log('foi')
+        var opt = document.createElement('option')
+        opt.value = i
+        opt.innerHTML = sheets[i-2].split('=9-=9--')[0].split(':::')[1].split('/0-0/')[0]
+        document.getElementById('sheetnames').appendChild(opt)
+    }
 }
