@@ -1,4 +1,5 @@
-langu(document.getElementById('lsel').value)
+createSkills(document.getElementById('lsel').value)
+createChar(document.getElementById('lsel').value)
 function Roll(t){
     var rand = Ro(100)
     document.getElementById('rollimg').style.width = '0%'
@@ -194,16 +195,17 @@ function cvalue(t){
     t.setAttribute('value', t.value)
 }
 function save() {
-    // var n;
-    // if (document.getElementById('name').value != ''){
-    //     n = document.getElementById('name').value
-    // } else {
-    //     n = "CoC"
-    // }
-    // var blob = new Blob([document.body.innerHTML],
-    //             { type: "text/plain;charset=utf-8" });
-    // saveAs(blob, n + ".sheet")
-    $.post('/save', {skills: translateSk(), characteristics: translateChar(), sheetid: document.getElementById('sheetid').value, img: document.getElementById('characterimg').getAttribute('src').toString()})
+    var n;
+    var sheet = translateChar() + '-/DIVISOR/-' + translateSk() + '-/DIVISOR/-' + document.getElementById('characterimgdiv').innerHTML + '-/DIVISOR/-' + document.getElementById('lsel').value
+    if (document.getElementById('char1').value != ''){
+        n = document.getElementById('char1').value
+    } else {
+        n = "CoC"
+    }
+    var blob = new Blob([sheet],
+                { type: "text/plain;charset=utf-8" });
+    saveAs(blob, n + ".sheet")
+    // $.post('/save', {skills: translateSk(), characteristics: translateChar(), sheetid: document.getElementById('sheetid').value, img: document.getElementById('characterimg').getAttribute('src').toString()})
 }
 function del(){
     $.post('/erase', {sheetid: document.getElementById('sheetid').value})
@@ -448,6 +450,7 @@ function createChar(l){
         document.getElementById('dis').innerHTML = 'Disclaimer: este é um site feito por fã para deixar a ficha mais fácil de usar'
         document.getElementById('saveBtn').innerHTML = 'Salvar'
         document.getElementById('delBtn').innerHTML = 'Apagar'
+        document.getElementById('loadBtn').innerHTML = 'Carregar'
         document.getElementById('newSh').innerHTML = 'Nova Ficha'
     } else if (l == "en-us"){
         document.getElementById("char1").placeholder = "Character Name"
@@ -479,55 +482,49 @@ function createChar(l){
         document.getElementById('dis').innerHTML = 'Disclaimer: this is a fanmade website to make the sheet easier to use'
         document.getElementById('saveBtn').innerHTML = 'Save'
         document.getElementById('delBtn').innerHTML = 'Delete'
+        document.getElementById('loadBtn').innerHTML = 'Load'
         document.getElementById('newSh').innerHTML = 'New Sheet'
     }
 }
 function langu(l){
+    var sks = translateSk()
     createSkills(l)
     createChar(l)
-    loadSheet()
+    for (var i = 1; i <= 60; i++){
+        document.getElementById('sk' + i).value = sks.split('=9-=9--')[0].split(':::')[1].split('/0-0/')[i-1]
+    }
+    for (var i = 1; i <= 19; i++){
+        document.getElementById('csk' + i).value = sks.split('=9-=9--')[1].split(':::')[1].split('/0-0/')[i-1]
+    }
 }
-function loadSheet(){
-    console.log(sheets[document.getElementById('sheetnames').value - 2])
-    if (document.getElementById('sheetnames').value != "new"){
+function loadSheet(sheet){
+    if (sheet != ''){
+        document.getElementById('lsel').value = sheet.split('-/DIVISOR/-')[3]
+        createSkills(sheet.split('-/DIVISOR/-')[3])
+        createChar(sheet.split('-/DIVISOR/-')[3])
         for (var i = 1; i <= 60; i++){
-            document.getElementById('sk' + i).value = sheets[document.getElementById('sheetnames').value - 1].split('&#x3D;9-&#x3D;9--')[0].split(':::')[1].split('/0-0/')[i-1]
+            document.getElementById('sk' + i).value = sheet.split('-/DIVISOR/-')[1].split('=9-=9--')[0].split(':::')[1].split('/0-0/')[i-1]
         }
         for (var i = 1; i <= 19; i++){
-            document.getElementById('csk' + i).value = sheets[document.getElementById('sheetnames').value - 1].split('&#x3D;9-&#x3D;9--')[1].split(':::')[1].split('/0-0/')[i-1]
+            document.getElementById('csk' + i).value = sheet.split('-/DIVISOR/-')[1].split('=9-=9--')[1].split(':::')[1].split('/0-0/')[i-1]
         }
         for (var i = 1; i <= 7; i++){
-            document.getElementById('char' + i).value = sheets[document.getElementById('sheetnames').value - 2].split('&#x3D;9-&#x3D;9--')[0].split(':::')[1].split('/0-0/')[i-1]
+            document.getElementById('char' + i).value = sheet.split('-/DIVISOR/-')[0].split('=9-=9--')[0].split(':::')[1].split('/0-0/')[i-1]
         }
         for (var i = 1; i <= 8; i++){
-            document.getElementById('att' + i).value = sheets[document.getElementById('sheetnames').value - 2].split('&#x3D;9-&#x3D;9--')[1].split(':::')[1].split('/0-0/')[i-1]
+            document.getElementById('att' + i).value = sheet.split('-/DIVISOR/-')[0].split('=9-=9--')[1].split(':::')[1].split('/0-0/')[i-1]
         }
         for (var i = 1; i <= 4; i++){
-            document.getElementById('cur' + i).value = sheets[document.getElementById('sheetnames').value - 2].split('&#x3D;9-&#x3D;9--')[2].split(':::')[1].split('/0-0/')[i-1]
+            document.getElementById('cur' + i).value = sheet.split('-/DIVISOR/-')[0].split('=9-=9--')[2].split(':::')[1].split('/0-0/')[i-1]
         }
         for (var i = 1; i <= 3; i++){
-            document.getElementById('max' + i).value = sheets[document.getElementById('sheetnames').value - 2].split('&#x3D;9-&#x3D;9--')[3].split(':::')[1].split('/0-0/')[i-1]
+            document.getElementById('max' + i).value = sheet.split('-/DIVISOR/-')[0].split('=9-=9--')[3].split(':::')[1].split('/0-0/')[i-1]
         }
+        document.getElementById('characterimgdiv').innerHTML = sheet.split('-/DIVISOR/-')[2]
         // document.getElementById('characterimg').src = sheets[document.getElementById('sheetnames').value + 1]
         document.getElementById('delBtn').hidden = false;
-        document.getElementById('sheetid').value = sheets[document.getElementById('sheetnames').value]
-    } else {
-        for (var i = 1; i <= 7; i++){
-            document.getElementById('char' + i).value = ''
-        }
-        for (var i = 1; i <= 8; i++){
-            document.getElementById('att' + i).value = ''
-        }
-        for (var i = 1; i <= 4; i++){
-            document.getElementById('cur' + i).value = ''
-        }
-        for (var i = 1; i <= 3; i++){
-            document.getElementById('max' + i).value = ''
-        }
-        document.getElementById('delBtn').hidden = true;
-        document.getElementById('sheetid').value = "new"
+        document.getElementById('saveBtn').hidden = false
     }
-    document.getElementById('saveBtn').hidden = false
 }
 function translateSk(){
     var skills;

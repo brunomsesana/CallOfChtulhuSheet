@@ -17,8 +17,9 @@
     <div class="empty">
 
     </div>
-    <a href="/" id="saveBtn" class="btn btn-primary" style="position: fixed; right: 10px; top: 10px;" onclick="save()">Save</a>
-    <a href="/" id="delBtn" class="btn btn-primary" style="position: fixed; right: 80px; top: 10px;" onclick="del()" hidden>Delete</a>
+    <button id="saveBtn" class="btn btn-primary" style="position: fixed; right: 10px; top: 10px;" onclick="save()">Save</button>
+    <button id="loadBtn" class="btn btn-primary" style="position: fixed; right: 80px; top: 10px;" onclick="document.getElementById('loadsel').click()">Load</button>
+    <button id="delBtn" class="btn btn-primary" style="position: fixed; right: 170px; top: 10px;" onclick="del()">Delete</button>
     <input type="file" id="loadsel" accept=".sheet" class="form-control" style="display: none;" onchange="load(this)">
     <input type="button" value="Load" onclick="document.getElementById('loadsel').click();" style="position: fixed; right: 70px; top: 10px;" class="btn btn-primary" hidden/>
     <div class="container shadow pad20 centralized window">
@@ -26,7 +27,7 @@
             <option value="pt-br">Português Brasileiro</option>
             <option value="en-us" selected>English</option>
         </select>
-        <select name="sheetnames" id="sheetnames" class="form-select" onchange="loadSheet()">
+        <select name="sheetnames" id="sheetnames" class="form-select" onchange="loadSheet()" hidden>
             <option id="newSh" value="new" selected>New Sheet</option>
         </select>
     </div>
@@ -36,7 +37,9 @@
     <div class="container shadow pad20 centralized window" id="char">
         <h2 id="charName">Caracteristicas</h2>
         <div style="width: 20%;" class="container innerWin ih">
-            <img id="characterimg" src="https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/fa3a7d93635679.5e699fbf9de8a.jpg" alt="" style="width: 90%;">
+            <div id="characterimgdiv">
+                <img id="characterimg" src="https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/fa3a7d93635679.5e699fbf9de8a.jpg" alt="" style="width: 90%;">
+            </div>
             <input type="file" id="characterimgsel" accept="image/gif, image/jpeg, image/png" class="form-control" style="display: none;" onchange="img(this)">
             <input id="btnimg" type="button" value="Browse" onclick="document.getElementById('characterimgsel').click();" style="width: 80%;" class="btn btn-primary"/>
         </div>
@@ -180,9 +183,15 @@
             reader.readAsDataURL(t.files[0]);
         }
         function load(t){
-            var reader = new FileReader();
+            /*var reader = new FileReader();
             reader.onload = function(e){
                 document.body.innerHTML = e.target.result;
+            }
+            reader.readAsText(t.files[0]);*/
+            var reader = new FileReader();
+            var sheet = '';
+            reader.onload = function(e){
+                loadSheet(e.target.result)
             }
             reader.readAsText(t.files[0]);
         }
