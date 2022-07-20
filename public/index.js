@@ -1,3 +1,4 @@
+langu(document.getElementById('lsel').value)
 function Roll(t){
     var rand = Ro(100)
     document.getElementById('rollimg').style.width = '0%'
@@ -14,7 +15,11 @@ function Roll(t){
         document.getElementById('result').innerHTML = checkResult(rand, t.parentNode.getElementsByTagName('input')[0].value)
     }, 500);
     document.getElementById('using').value = t.parentNode.getElementsByTagName('input')[0].value;
-    document.getElementById('using2').innerHTML = "Normal: " + t.parentNode.getElementsByTagName('input')[0].value + "<br>Bom: " + Math.floor(t.parentNode.getElementsByTagName('input')[0].value/2) + "<br>Extremo: " + Math.floor(t.parentNode.getElementsByTagName('input')[0].value/5);
+    if (document.getElementById('lsel').value == 'pt-br'){
+        document.getElementById('using2').innerHTML = "Normal: " + t.parentNode.getElementsByTagName('input')[0].value + "<br>Bom: " + Math.floor(t.parentNode.getElementsByTagName('input')[0].value/2) + "<br>Extremo: " + Math.floor(t.parentNode.getElementsByTagName('input')[0].value/5);
+    } else  if (document.getElementById('lsel').value == 'en-us'){
+        document.getElementById('using2').innerHTML = "Normal: " + t.parentNode.getElementsByTagName('input')[0].value + "<br>Good: " + Math.floor(t.parentNode.getElementsByTagName('input')[0].value/2) + "<br>Extreme: " + Math.floor(t.parentNode.getElementsByTagName('input')[0].value/5);
+    }
     document.getElementById('rerollbtn').setAttribute('onclick', 'Roll(this)')
 }
 function RollCustom(){
@@ -144,23 +149,44 @@ function Ro(q){
 function checkResult(rand, check){
     var ex = check/5;
     var go = check/2;
-    if (rand <= ex){
-        if (rand == 1){
-            return "Crítico"
-        } else {
-            return "Extremo"
+    if (document.getElementById('lsel').value == 'pt-br'){
+        if (rand <= ex){
+            if (rand == 1){
+                return "Crítico"
+            } else {
+                return "Extremo"
+            }
         }
-    }
-    else if (rand <= go){
-        return "Bom"
-    }
-    else if (rand <= check){
-        return "Normal"
-    } else if (rand == 100){
-        return "Desastre"
-    }
-    else {
-        return "Falha"
+        else if (rand <= go){
+            return "Bom"
+        }
+        else if (rand <= check){
+            return "Normal"
+        } else if (rand == 100){
+            return "Desastre"
+        }
+        else {
+            return "Falha"
+        }
+    } else if (document.getElementById('lsel').value == 'en-us'){
+        if (rand <= ex){
+            if (rand == 1){
+                return "Critical"
+            } else {
+                return "Extreme"
+            }
+        }
+        else if (rand <= go){
+            return "Good"
+        }
+        else if (rand <= check){
+            return "Normal"
+        } else if (rand == 100){
+            return "Disaster"
+        }
+        else {
+            return "Failure"
+        }
     }
 
 }
@@ -178,6 +204,9 @@ function save() {
     //             { type: "text/plain;charset=utf-8" });
     // saveAs(blob, n + ".sheet")
     $.post('/save', {skills: translateSk(), characteristics: translateChar(), sheetid: document.getElementById('sheetid').value, img: document.getElementById('characterimg').getAttribute('src').toString()})
+}
+function del(){
+    $.post('/erase', {sheetid: document.getElementById('sheetid').value})
 }
 function createSkills(l){
     var csks = [];
@@ -414,6 +443,12 @@ function createChar(l){
         document.getElementById("mp").innerHTML = "Pontos de Magia:"
         document.getElementById("luckn").innerHTML = "Sorte:"
         document.getElementById("btnimg").value = "Procurar"
+        document.getElementById('charName').innerHTML = 'Características'
+        document.getElementById('tlt').innerHTML = 'Ficha Automatica de Call of Cthulhu'
+        document.getElementById('dis').innerHTML = 'Disclaimer: este é um site feito por fã para deixar a ficha mais fácil de usar'
+        document.getElementById('saveBtn').innerHTML = 'Salvar'
+        document.getElementById('delBtn').innerHTML = 'Apagar'
+        document.getElementById('newSh').innerHTML = 'Nova Ficha'
     } else if (l == "en-us"){
         document.getElementById("char1").placeholder = "Character Name"
         document.getElementById("char2").placeholder = "Player Name"
@@ -439,11 +474,20 @@ function createChar(l){
         document.getElementById("mp").innerHTML = "Magic Points:"
         document.getElementById("luckn").innerHTML = "Luck:"
         document.getElementById("btnimg").value = "Browse"
+        document.getElementById('charName').innerHTML = 'Characteristics'
+        document.getElementById('tlt').innerHTML = 'Call of Cthulhu Automatic Sheet'
+        document.getElementById('dis').innerHTML = 'Disclaimer: this is a fanmade website to make the sheet easier to use'
+        document.getElementById('saveBtn').innerHTML = 'Save'
+        document.getElementById('delBtn').innerHTML = 'Delete'
+        document.getElementById('newSh').innerHTML = 'New Sheet'
     }
 }
-function langu(l, t){
+function langu(l){
     createSkills(l)
     createChar(l)
+    loadSheet()
+}
+function loadSheet(){
     console.log(sheets[document.getElementById('sheetnames').value - 2])
     if (document.getElementById('sheetnames').value != "new"){
         for (var i = 1; i <= 60; i++){
@@ -465,6 +509,7 @@ function langu(l, t){
             document.getElementById('max' + i).value = sheets[document.getElementById('sheetnames').value - 2].split('&#x3D;9-&#x3D;9--')[3].split(':::')[1].split('/0-0/')[i-1]
         }
         // document.getElementById('characterimg').src = sheets[document.getElementById('sheetnames').value + 1]
+        document.getElementById('delBtn').hidden = false;
         document.getElementById('sheetid').value = sheets[document.getElementById('sheetnames').value]
     } else {
         for (var i = 1; i <= 7; i++){
@@ -479,8 +524,10 @@ function langu(l, t){
         for (var i = 1; i <= 3; i++){
             document.getElementById('max' + i).value = ''
         }
+        document.getElementById('delBtn').hidden = true;
         document.getElementById('sheetid').value = "new"
     }
+    document.getElementById('saveBtn').hidden = false
 }
 function translateSk(){
     var skills;
@@ -528,7 +575,6 @@ function translateChar(){
 createopts()
 function createopts(){
     for (var i = 2; i < sheets.length; i+=4){
-        console.log('foi')
         var opt = document.createElement('option')
         opt.value = i
         opt.innerHTML = sheets[i-2].split('=9-=9--')[0].split(':::')[1].split('/0-0/')[0]

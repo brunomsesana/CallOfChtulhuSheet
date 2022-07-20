@@ -10,33 +10,31 @@
 </head>
 <body>
     <div class="container shadow centralized pad20 window">
-        <h1>Ficha Automatica de Call of Cthulhu</h1>
-        <p>Disclaimer: this is a fanmade website to make the sheet easier to use</p>
+        <h1 id="tlt">Call of Cthulhu Automatic Sheet</h1>
+        <p id="dis">Disclaimer: this is a fanmade website to make the sheet easier to use</p>
         <a href="/login">Logout</a>
     </div>
     <div class="empty">
 
     </div>
-    <button class="btn btn-primary" style="position: fixed; right: 10px; top: 10px;" onclick="save()">Save</button>
-    <button class="btn btn-primary" style="position: fixed; right: 10px; top: 40px;" onclick="console.log(translateChar())">Translate</button>
+    <a href="/" id="saveBtn" class="btn btn-primary" style="position: fixed; right: 10px; top: 10px;" onclick="save()">Save</a>
+    <a href="/" id="delBtn" class="btn btn-primary" style="position: fixed; right: 80px; top: 10px;" onclick="del()" hidden>Delete</a>
     <input type="file" id="loadsel" accept=".sheet" class="form-control" style="display: none;" onchange="load(this)">
-    <input type="button" value="Load" onclick="document.getElementById('loadsel').click();" style="position: fixed; right: 70px; top: 10px;" class="btn btn-primary"/>
+    <input type="button" value="Load" onclick="document.getElementById('loadsel').click();" style="position: fixed; right: 70px; top: 10px;" class="btn btn-primary" hidden/>
     <div class="container shadow pad20 centralized window">
-        <select class="form-select" id="lsel">
-            <option value="" hidden selected>Language</option>
+        <select class="form-select" id="lsel" onchange="langu(this.value)">
             <option value="pt-br">Português Brasileiro</option>
-            <option value="en-us">English</option>
+            <option value="en-us" selected>English</option>
         </select>
-        <select name="sheetnames" id="sheetnames" class="form-select">
-            <option value="new" selected>New Sheet</option>
+        <select name="sheetnames" id="sheetnames" class="form-select" onchange="loadSheet()">
+            <option id="newSh" value="new" selected>New Sheet</option>
         </select>
-        <button onclick="if (document.getElementById('lsel').value) {langu(document.getElementById('lsel').value, this.parentNode)}" class="btn btn-primary">Choose</button>
     </div>
     <div class="empty">
         
     </div>
-    <div class="container shadow pad20 centralized window" id="char" hidden>
-        <h2>Caracteristicas</h2>
+    <div class="container shadow pad20 centralized window" id="char">
+        <h2 id="charName">Caracteristicas</h2>
         <div style="width: 20%;" class="container innerWin ih">
             <img id="characterimg" src="https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/fa3a7d93635679.5e699fbf9de8a.jpg" alt="" style="width: 90%;">
             <input type="file" id="characterimgsel" accept="image/gif, image/jpeg, image/png" class="form-control" style="display: none;" onchange="img(this)">
@@ -153,7 +151,7 @@
     <div class="empty">
         
     </div>
-    <div class="container shadow pad20 centralized window" style="margin-bottom: 200px;" id="skills" hidden>
+    <div class="container shadow pad20 centralized window" style="margin-bottom: 200px;" id="skills">
         <h2 id="sknam">Perícias</h2>
         <div style="clear: both;"></div>
         <div style="clear: both;" class="centralized container" id="customDDiv">

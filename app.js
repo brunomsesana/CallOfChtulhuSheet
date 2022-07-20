@@ -81,5 +81,8 @@ app.post('/save', (req, res) =>{
         db.query('UPDATE sheets SET characteristics=$1, skills=$2, img=$3 WHERE sheetid=$4', [req.body.characteristics, req.body.skills, req.body.img, req.body.sheetid])
     }
 })
+app.post('/erase', (req, res) =>{
+    db.query('DELETE FROM sheets WHERE sheetid=$1', [req.body.sheetid])
+})
 
 app.listen(5000);
