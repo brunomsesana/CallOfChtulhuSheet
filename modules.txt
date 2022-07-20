@@ -1,0 +1,8 @@
+npm i nodemon, express, express-session, body-parser, bcrypt, dotenv, pg
+
+env:
+DB_HOST=
+DB_PASSWORD=
+DB_DATABASE=
+DB_USER=
+SESSION_SECRET=
