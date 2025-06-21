@@ -31,6 +31,11 @@ body{
     background-color: #788c94;
     border-radius: 10px;
 }
+.skill{
+    margin-bottom: 10px;
+    padding: 10px;
+    overflow-x: auto;
+}
 .savebtn{
     position: fixed;
     right: 10px;

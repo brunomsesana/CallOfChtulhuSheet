@@ -359,8 +359,7 @@ function createSkills(l){
     for (var i = 0; i < sk.length; i++){
         var div1 = document.createElement('div')
         div1.setAttribute('name', "sk" + sk[i][3])
-        div1.style = "margin-bottom: 10px; padding: 10px; overflow-x: auto;"
-        div1.className = 'container ininnerWin'
+        div1.className = 'container ininnerWin skill'
         var div2 = document.createElement('div')
         div2.style = 'clear: both;'
         var div3 = document.createElement('div')
@@ -452,6 +451,7 @@ function createChar(l){
         document.getElementById('delBtn').innerHTML = 'Apagar'
         document.getElementById('loadBtn').innerHTML = 'Carregar'
         document.getElementById('newSh').innerHTML = 'Nova Ficha'
+        document.getElementById('htmlT').innerHTML = 'Ficha Call of Cthulhu'
     } else if (l == "en-us"){
         document.getElementById("char1").placeholder = "Character Name"
         document.getElementById("char2").placeholder = "Player Name"
@@ -484,6 +484,7 @@ function createChar(l){
         document.getElementById('delBtn').innerHTML = 'Delete'
         document.getElementById('loadBtn').innerHTML = 'Load'
         document.getElementById('newSh').innerHTML = 'New Sheet'
+        document.getElementById('htmlT').innerHTML = 'Call of Cthulhu Sheet'
     }
 }
 function langu(l){
