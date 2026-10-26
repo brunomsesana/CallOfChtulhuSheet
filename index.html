@@ -19,7 +19,8 @@
     </div>
     <button id="saveBtn" class="btn btn-primary" style="position: fixed; right: 10px; top: 10px;" onclick="save()">Save</button>
     <button id="loadBtn" class="btn btn-primary" style="position: fixed; right: 80px; top: 10px;" onclick="document.getElementById('loadsel').click()">Load</button>
-    <button id="delBtn" class="btn btn-primary" style="position: fixed; right: 170px; top: 10px;" onclick="del()">Delete</button>
+    <button id="delBtn" class="btn btn-primary" style="position: fixed; right: 150px; top: 10px;" onclick="del()">Delete</button>
+    <button id="pdfBtn" class="btn btn-primary" style="position: fixed; right: 235px; top: 10px;" onclick="exportarParaPDF()">Export PDF</button>
     <input type="file" id="loadsel" accept=".sheet" class="form-control" style="display: none;" onchange="load(this)">
     <input type="button" value="Load" onclick="document.getElementById('loadsel').click();" style="position: fixed; right: 70px; top: 10px;" class="btn btn-primary" hidden/>
     <div class="container shadow pad20 centralized window">
@@ -199,6 +200,7 @@
     <script>
         sheets = [];
     </script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <script src="FileSaver.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="index.js"></script>

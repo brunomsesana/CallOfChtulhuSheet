@@ -452,6 +452,7 @@ function createChar(l){
         document.getElementById('loadBtn').innerHTML = 'Carregar'
         document.getElementById('newSh').innerHTML = 'Nova Ficha'
         document.getElementById('htmlT').innerHTML = 'Ficha Call of Cthulhu'
+        document.getElementById('pdfBtn').innerHTML = 'Exportar PDF'
     } else if (l == "en-us"){
         document.getElementById("char1").placeholder = "Character Name"
         document.getElementById("char2").placeholder = "Player Name"
@@ -485,6 +486,7 @@ function createChar(l){
         document.getElementById('loadBtn').innerHTML = 'Load'
         document.getElementById('newSh').innerHTML = 'New Sheet'
         document.getElementById('htmlT').innerHTML = 'Call of Cthulhu Sheet'
+        document.getElementById('pdfBtn').innerHTML = 'Export PDF'
     }
 }
 function langu(l){
@@ -577,5 +579,286 @@ function createopts(){
         opt.value = i
         opt.innerHTML = sheets[i-2].split('=9-=9--')[0].split(':::')[1].split('/0-0/')[0]
         document.getElementById('sheetnames').appendChild(opt)
+    }
+}
+// ============================================================================
+// EXPORTAÇÃO EXATA PARA O PDF "FICHA-EDITAVEL-CHAMADO-DE-CTHULHU.pdf"
+// ============================================================================
+
+function calcHalf(val) {
+    var n = parseInt(val, 10);
+    return isNaN(n) || n <= 0 ? '' : String(Math.floor(n / 2));
+}
+
+function calcFifth(val) {
+    var n = parseInt(val, 10);
+    return isNaN(n) || n <= 0 ? '' : String(Math.floor(n / 5));
+}
+
+// Calcula Bônus de Dano (DamageBonus) e Corpo (Build) automaticamente (FOR + TAM)
+function calcularBDeCorpo(forca, tamanho) {
+    var s = parseInt(forca, 10);
+    var z = parseInt(tamanho, 10);
+    if (isNaN(s) || isNaN(z)) return { bd: '', build: '' };
+    var soma = s + z;
+    if (soma <= 64) return { bd: '-2', build: '-2' };
+    if (soma <= 84) return { bd: '-1', build: '-1' };
+    if (soma <= 124) return { bd: '0', build: '0' };
+    if (soma <= 164) return { bd: '+1d4', build: '1' };
+    if (soma <= 204) return { bd: '+1d6', build: '2' };
+    if (soma <= 284) return { bd: '+2d6', build: '3' };
+    if (soma <= 364) return { bd: '+3d6', build: '4' };
+    return { bd: '+4d6', build: '5' };
+}
+
+// Calcula Taxa de Movimento (MOV) automaticamente (FOR, DES, TAM e Idade)
+function calcularMOV(forca, destreza, tamanho, idade) {
+    var s = parseInt(forca, 10);
+    var d = parseInt(destreza, 10);
+    var z = parseInt(tamanho, 10);
+    var id = parseInt(idade, 10);
+    if (isNaN(s) || isNaN(d) || isNaN(z)) return '';
+
+    var mov = 8;
+    if (d < z && s < z) mov = 7;
+    else if (d > z && s > z) mov = 9;
+
+    if (!isNaN(id)) {
+        if (id >= 80) mov -= 5;
+        else if (id >= 70) mov -= 4;
+        else if (id >= 60) mov -= 3;
+        else if (id >= 50) mov -= 2;
+        else if (id >= 40) mov -= 1;
+    }
+    return String(Math.max(1, mov));
+}
+
+async function exportarParaPDF() {
+    try {
+        const urlPdf = 'FICHA-EDITAVEL-CHAMADO-DE-CTHULHU.pdf';
+        const existingPdfBytes = await fetch(urlPdf).then(res => {
+            if (!res.ok) throw new Error('Arquivo PDF não encontrado: ' + urlPdf);
+            return res.arrayBuffer();
+        });
+
+        const { PDFDocument } = PDFLib;
+        const pdfDoc = await PDFDocument.load(existingPdfBytes);
+        const form = pdfDoc.getForm();
+
+        // Helper para ler valor de um input do seu HTML
+        const val = (id) => {
+            const el = document.getElementById(id);
+            return el && el.value !== undefined ? String(el.value).trim() : '';
+        };
+
+        // Helper para escrever em um campo de texto do PDF com segurança
+        const setTxt = (fieldName, value) => {
+            if (value === undefined || value === null || value === '') return;
+            try {
+                form.getTextField(fieldName).setText(String(value));
+            } catch (e) {
+                console.warn('Campo não encontrado no PDF:', fieldName);
+            }
+        };
+
+        // Helper para preencher Regular, Metade e 1/5 de uma vez
+        const setSkill = (valId, regField, halfField, fifthField) => {
+            const v = val(valId);
+            if (v === '') return;
+            if (regField) setTxt(regField, v);
+            if (halfField) setTxt(halfField, calcHalf(v));
+            if (fifthField) setTxt(fifthField, calcFifth(v));
+        };
+
+        // ====================================================================
+        // 1. CABEÇALHO DO INVESTIGADOR (char1 a char7)
+        // ====================================================================
+        setTxt('Nome', val('char1'));
+        setTxt('Jogador (a)', val('char2'));
+        setTxt('Ocupação', val('char3'));
+        setTxt('Sexo', val('char4'));
+        setTxt('age', val('char5'));
+        setTxt('Residência', val('char6'));
+        setTxt('Nascimento', val('char7'));
+
+        // ====================================================================
+        // 2. CARACTERÍSTICAS / ATRIBUTOS (att1 a att8)
+        // ====================================================================
+        setSkill('att1', 'str', 'str 1/2', 'str 1/5');          // Força
+        setSkill('att2', 'con', 'con Metade', 'con 1/5');       // Constituição
+        setSkill('att3', 'siz', 'siz Metade', 'siz 1/5');       // Tamanho
+        setSkill('att4', 'dex', 'dex Metade', 'dex 1/5');       // Destreza
+        setSkill('att5', 'app', 'app Metade', 'app 1/5');       // Aparência
+        setSkill('att6', 'edu', 'edu Metade', 'edu 1/5');       // Educação
+        setSkill('att7', 'int', 'int Metade', 'int 1/5');       // Inteligência
+        setSkill('att8', 'pow', 'pow Metade', 'pow 1/5');       // Poder
+
+        // Status derivados e Pontos Máximos/Iniciais
+        setTxt('MaxHP', val('max1') || val('cur1'));
+        setTxt('Sanity_Start', val('cur2') || val('att8'));     // Sanidade Inicial/Atual
+        setTxt('Sanity_Max', val('max2') || String(99 - (parseInt(val('sk11'), 10) || 0)));
+        setTxt('LuckTotal', val('cur4'));
+
+        // Taxa de Movimento (MOV), Bônus de Dano (DamageBonus) e Corpo (Build)
+        const mov = calcularMOV(val('att1'), val('att4'), val('att3'), val('char5'));
+        setTxt('MOV', mov);
+
+        const combate = calcularBDeCorpo(val('att1'), val('att3'));
+        setTxt('DamageBonus', combate.bd);
+        setTxt('Build', combate.build);
+
+        // Quadro de Combate: Esquiva (canto inferior direito) e Lutar (Briga) Desarmado
+        setSkill('sk13', 'Dodge', 'Dodge_Copy_half', 'Dodge_Copy_fifth');
+        setSkill('sk17', 'regular1', 'dificil1', 'extremo1');
+
+        // ====================================================================
+        // 3. PERÍCIAS FIXAS DO INVESTIGADOR
+        // ====================================================================
+        setSkill('sk1',  'contabilidade', 'contabilidadeMetade', 'contabilidade1/5');
+        setSkill('sk2',  'antropologia', 'antropologia1 Metade', 'antropologia1 1/5');
+        setSkill('sk3',  'avaliaçãoo', 'a1 Metadeavaliação', 'a1 1/5avaliação');
+        setSkill('sk4',  'arqueologia', 'arqueologiaMetade', 'arqueologia1/5');
+        setSkill('sk8',  'charme', 'a1 Metadecharme', 'a1 1/5charme');
+        setSkill('sk9',  'escalar', 'a1 Metadeescalar', 'a1 1/5escalar');
+        setSkill('sk10', 'crédito', 'a1 Metadecrédito', 'a1 1/5crédito');
+        setSkill('sk11', 'mythos', 'mythosaa', 'mythosaaa');
+        setSkill('sk12', 'disfarce', 'a1 Metadedisfarce', 'a1 1/5disfarce');
+        setSkill('sk13', 'esquivar', 'esquivar metade', 'esquivar quinto');
+        setSkill('sk14', 'dirigir', 'a1 Metadedirigir', 'a1 1/5dirigir');
+        setSkill('sk15', 'eletricos', 'eletricos Metade', 'eletricos 1/5');
+        setSkill('sk16', 'labia', 'a1 Metadelabia', 'a1 1/5labia');
+        setSkill('sk17', 'lutara', 'a1 Metadelutar', 'a1 1/5lutar');
+        setSkill('sk20', 'pistolas', 'pistolasMetade', 'pistolas1/5');
+        setSkill('sk21', 'rifles', 'a1 Metaderifles', 'rifles 1/5');
+        setSkill('sk23', 'primeiros socorros', 'a1 Metadeprimeiros socorros', 'a1 1/5primeiros socorros');
+        setSkill('sk24', 'historia', 'a1 Metadehistoria', 'a1 1/5historia');
+        setSkill('sk25', 'intimidacao', 'a1 Metadeintimidacao', 'a1 1/5intimidacao');
+        setSkill('sk26', 'saltar', 'a1 Metadesaltar', 'a1 1/5saltar');
+        setSkill('sk31', 'direito', 'a1 Metadedireito', 'a1 1/5direito');
+        setSkill('sk32', 'abranco12a', 'abranco12aaa', 'abranco12aaaaa'); // Usar Biblioteca
+        setSkill('sk33', 'escutar', 'a1 Metadeescutar', 'a1 1/5escutar');
+        setSkill('sk34', 'chaveiro', 'a1 Metadechaveiro', 'a1 1/5chaveiro');
+        setSkill('sk35', 'mecanicos', 'mecanicos Metade', 'mecanicos 1/5');
+        setSkill('sk36', 'medicinaa', 'medicinaaa', 'medicinasd');
+        setSkill('sk37', 'natural', 'naturalqq', 'a1 1/5natural');
+        setSkill('sk38', 'navegacaoa', 'a1 Metadenavegacao', 'a1 1/5navegacao');
+        setSkill('sk39', 'ocultismoa', 'a1 Metadeocultismo', 'a1 1/5ocultismo');
+        setSkill('sk40', 'maquinario', 'a1 Metademaquinario', 'a1 1/5maquinario');
+        setSkill('sk41', 'persuasao', 'a1 Metadepersuasao', 'a1 1/5persuasao');
+        setSkill('sk43', 'psicanalise', 'a1 Metadepsicanalise', 'a1 1/5psicanalise');
+        setSkill('sk44', 'psicologia', 'a1 Metadepsicologia', 'a1 1/5psicologia');
+        setSkill('sk45', 'cavalgar', 'a1 Metadecavalgar', 'a1 1/5cavalgar');
+        setSkill('sk46', 'ciencia', 'a1 Metadeciencia', 'a1 1/5ciencia');
+        setSkill('sk49', 'prestidigitacaoa', 'a1 Metadeprestidigitacao', 'a1 1/5prestidigitacao');
+        setSkill('sk50', 'encontrar', 'a1 Metadeencontrar', 'a1 1/5encontrar');
+        setSkill('sk51', 'furtividade', 'a1 Metadefurtividade', 'a1 1/5furtividade');
+        setSkill('sk53', 'natacaoa', 'a1 Metadenatacao', 'a1 1/5natacao');
+        setSkill('sk54', 'arremessar', 'a1 Metadearremessar', 'a1 1/5arremessar');
+        setSkill('sk55', 'rastrear', 'a1 Metaderastrear', 'a1 1/5rastrear');
+
+        // ====================================================================
+        // 4. PERÍCIAS COM ESPECIALIZAÇÃO E ESPAÇOS EM BRANCO (csk1 a csk19)
+        // Na versão pt-br, a ordem dos inputs customizados (csk1..csk19) é:
+        // csk1: Armas 1 (sk22)        | csk2: Arte/Ofício 1 (sk5) | csk3: Arte/Ofício 2 (sk6)
+        // csk4: Arte/Ofício 3 (sk7)   | csk5: Ciência 1 (sk47)    | csk6: Ciência 2 (sk48)
+        // csk7: Idioma Nativo (sk27)  | csk8: Idioma 1 (sk28)     | csk9: Idioma 2 (sk29)
+        // csk10: Idioma 3 (sk30)      | csk11: Luta 1 (sk18)      | csk12: Luta 2 (sk19)
+        // csk13: Pilotar (sk42)       | csk14: Sobrevivência(sk52)| csk15..19: Personalizado(sk56..60)
+        // ====================================================================
+
+        // Arte / Ofício 1, 2 e 3
+        setTxt('ARTES OU OFICIOS', val('csk2'));
+        setSkill('sk5', 'arte', 'a1 Metadearte', 'a1 1/5arte');
+
+        setTxt('abranco1a', val('csk3'));
+        setSkill('sk6', 'abranco', 'a1 Metadeabranco', 'a1 1/5abranco');
+
+        setTxt('abranco2a', val('csk4'));
+        setSkill('sk7', 'a1a1branco', 'a1 Metadea1a1branco', 'a1 1/5a1a1branco');
+
+        // Ciência 1 e 2
+        setTxt('abranco4', val('csk5'));
+        setSkill('sk47', '4branco', 'a1 Metade4branco', 'a1 1/54branco');
+
+        setTxt('abranco6', val('csk6'));
+        setSkill('sk48', 'abranco6a', 'branco1 Metadeabranco6', 'branco1 1/5abranco6');
+
+        // Idioma (Nativo) e Idiomas 1, 2 e 3
+        setTxt('LINGUA NATURALL', val('csk7'));
+        setSkill('sk27', 'lingua natural', 'a1 Metadelingua natural', 'a1 1/5lingua natural');
+
+        setTxt('LINGUA OUTRASS', val('csk8'));
+        setSkill('sk28', 'lingua outra', 'a1 Metadelingua outra', 'a1 1/5lingua outra');
+
+        setTxt('abranco8', val('csk9'));
+        setSkill('sk29', 'abranco8a', 'a1 Metadecbranco0a', 'a1 1/5cbranco0a');
+
+        setTxt('abranco9', val('csk10'));
+        setSkill('sk30', 'abranco9a', 'abranco9aa', 'abranco10a');
+
+        // Luta 1 e 2
+        setTxt('abranco10', val('csk11'));
+        setSkill('sk18', 'abranco10aa', 'abranco10aaa', 'abranco11a');
+
+        setTxt('abranco11', val('csk12'));
+        setSkill('sk19', 'abranco11aa', 'abranco11aaa', 'abranco12aa');
+
+        // Pilotar e Sobrevivência
+        setTxt('abranco13', val('csk13'));
+        setSkill('sk42', 'pilotar', 'a1 Metadepilotar', 'a1 1/5pilotar');
+
+        setTxt('abranco14', val('csk14'));
+        setSkill('sk52', 'sobrevivencia', 'a1 Metadesobrevivencia', 'a1 1/5sobrevivencia');
+
+        // Armas 1 (usa linha em branco da 1ª coluna)
+        setTxt('abranco3a', val('csk1'));
+        setSkill('sk22', 'abranco3', 'a1 Metadeaabranco3', 'a1 1/5aabranco3');
+
+        // Perícias Personalizadas (sk56 a sk59) nos espaços em branco restantes do PDF
+        setTxt('abranco7', val('csk15'));
+        setSkill('sk56', 'abranco7a', 'branco2 Metadeabranco7a', 'branco2 1/5abranco7a');
+
+        setTxt('abranco12', val('csk16'));
+        setSkill('sk57', 'abranco13a', 'a1 Metadedbranco13aa', 'a1 1/5dbranco13');
+
+        setTxt('abranco15', val('csk17'));
+        setSkill('sk58', 'abranco14a', 'a1 Metadedbranco2', 'a1 1/5dbranco2');
+
+        setTxt('abranco12aaaas', val('csk18'));
+        setSkill('sk59', 'abranco15a', 'a1 Metadedbranco3', 'a1 1/5dbranco3');
+
+        // ====================================================================
+        // 5. FOTO DO PERSONAGEM (Página 2 do PDF)
+        // ====================================================================
+        const imgEl = document.getElementById('characterimg');
+        if (imgEl && imgEl.src && imgEl.src.startsWith('data:image/')) {
+            try {
+                const embeddedImg = imgEl.src.startsWith('data:image/png')
+                    ? await pdfDoc.embedPng(imgEl.src)
+                    : await pdfDoc.embedJpg(imgEl.src);
+
+                const pages = pdfDoc.getPages();
+                if (pages.length > 1) {
+                    pages[1].drawImage(embeddedImg, {
+                        x: 38,
+                        y: 635,
+                        width: 115,
+                        height: 135
+                    });
+                }
+            } catch (imgErr) {
+                console.warn('Não foi possível inserir a imagem personalizada:', imgErr);
+            }
+        }
+
+        // Salva o PDF mantendo os campos editáveis e faz o download
+        const pdfBytes = await pdfDoc.save();
+        const nomePersonagem = val('char1') || 'Investigador_CoC';
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        saveAs(blob, nomePersonagem + '.pdf');
+
+    } catch (erro) {
+        console.error('Erro ao gerar o PDF:', erro);
+        alert('Não foi possível exportar o PDF. Verifique se o arquivo FICHA-EDITAVEL-CHAMADO-DE-CTHULHU.pdf está na mesma pasta.');
     }
 }
