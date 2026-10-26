@@ -645,13 +645,11 @@ async function exportarParaPDF() {
         const pdfDoc = await PDFDocument.load(existingPdfBytes);
         const form = pdfDoc.getForm();
 
-        // Helper para ler valor de um input do seu HTML
         const val = (id) => {
             const el = document.getElementById(id);
             return el && el.value !== undefined ? String(el.value).trim() : '';
         };
 
-        // Helper para escrever em um campo de texto do PDF com segurança
         const setTxt = (fieldName, value) => {
             if (value === undefined || value === null || value === '') return;
             try {
@@ -661,7 +659,6 @@ async function exportarParaPDF() {
             }
         };
 
-        // Helper para preencher Regular, Metade e 1/5 de uma vez
         const setSkill = (valId, regField, halfField, fifthField) => {
             const v = val(valId);
             if (v === '') return;
@@ -671,7 +668,7 @@ async function exportarParaPDF() {
         };
 
         // ====================================================================
-        // 1. CABEÇALHO DO INVESTIGADOR (char1 a char7)
+        // 1. CABEÇALHO DO INVESTIGADOR
         // ====================================================================
         setTxt('Nome', val('char1'));
         setTxt('Jogador (a)', val('char2'));
@@ -682,24 +679,23 @@ async function exportarParaPDF() {
         setTxt('Nascimento', val('char7'));
 
         // ====================================================================
-        // 2. CARACTERÍSTICAS / ATRIBUTOS (att1 a att8)
+        // 2. CARACTERÍSTICAS / ATRIBUTOS E CÁLCULOS AUTOMÁTICOS
         // ====================================================================
-        setSkill('att1', 'str', 'str 1/2', 'str 1/5');          // Força
-        setSkill('att2', 'con', 'con Metade', 'con 1/5');       // Constituição
-        setSkill('att3', 'siz', 'siz Metade', 'siz 1/5');       // Tamanho
-        setSkill('att4', 'dex', 'dex Metade', 'dex 1/5');       // Destreza
-        setSkill('att5', 'app', 'app Metade', 'app 1/5');       // Aparência
-        setSkill('att6', 'edu', 'edu Metade', 'edu 1/5');       // Educação
-        setSkill('att7', 'int', 'int Metade', 'int 1/5');       // Inteligência
-        setSkill('att8', 'pow', 'pow Metade', 'pow 1/5');       // Poder
+        setSkill('att1', 'str', 'str 1/2', 'str 1/5');
+        setSkill('att2', 'con', 'con Metade', 'con 1/5');
+        setSkill('att3', 'siz', 'siz Metade', 'siz 1/5');
+        setSkill('att4', 'dex', 'dex Metade', 'dex 1/5');
+        setSkill('att5', 'app', 'app Metade', 'app 1/5');
+        setSkill('att6', 'edu', 'edu Metade', 'edu 1/5');
+        setSkill('att7', 'int', 'int Metade', 'int 1/5');
+        setSkill('att8', 'pow', 'pow Metade', 'pow 1/5');
 
-        // Status derivados e Pontos Máximos/Iniciais
         setTxt('MaxHP', val('max1') || val('cur1'));
-        setTxt('Sanity_Start', val('cur2') || val('att8'));     // Sanidade Inicial/Atual
+        setTxt('Sanity_Start', val('cur2') || val('att8'));
         setTxt('Sanity_Max', val('max2') || String(99 - (parseInt(val('sk11'), 10) || 0)));
         setTxt('LuckTotal', val('cur4'));
 
-        // Taxa de Movimento (MOV), Bônus de Dano (DamageBonus) e Corpo (Build)
+        // Cálculos automáticos de MOV, Bônus de Dano e Corpo (Build)[cite: 1]
         const mov = calcularMOV(val('att1'), val('att4'), val('att3'), val('char5'));
         setTxt('MOV', mov);
 
@@ -707,12 +703,11 @@ async function exportarParaPDF() {
         setTxt('DamageBonus', combate.bd);
         setTxt('Build', combate.build);
 
-        // Quadro de Combate: Esquiva (canto inferior direito) e Lutar (Briga) Desarmado
         setSkill('sk13', 'Dodge', 'Dodge_Copy_half', 'Dodge_Copy_fifth');
         setSkill('sk17', 'regular1', 'dificil1', 'extremo1');
 
         // ====================================================================
-        // 3. PERÍCIAS FIXAS DO INVESTIGADOR
+        // 3. PERÍCIAS FIXAS E CUSTOMIZADAS
         // ====================================================================
         setSkill('sk1',  'contabilidade', 'contabilidadeMetade', 'contabilidade1/5');
         setSkill('sk2',  'antropologia', 'antropologia1 Metade', 'antropologia1 1/5');
@@ -735,7 +730,7 @@ async function exportarParaPDF() {
         setSkill('sk25', 'intimidacao', 'a1 Metadeintimidacao', 'a1 1/5intimidacao');
         setSkill('sk26', 'saltar', 'a1 Metadesaltar', 'a1 1/5saltar');
         setSkill('sk31', 'direito', 'a1 Metadedireito', 'a1 1/5direito');
-        setSkill('sk32', 'abranco12a', 'abranco12aaa', 'abranco12aaaaa'); // Usar Biblioteca
+        setSkill('sk32', 'abranco12a', 'abranco12aaa', 'abranco12aaaaa');
         setSkill('sk33', 'escutar', 'a1 Metadeescutar', 'a1 1/5escutar');
         setSkill('sk34', 'chaveiro', 'a1 Metadechaveiro', 'a1 1/5chaveiro');
         setSkill('sk35', 'mecanicos', 'mecanicos Metade', 'mecanicos 1/5');
@@ -756,79 +751,88 @@ async function exportarParaPDF() {
         setSkill('sk54', 'arremessar', 'a1 Metadearremessar', 'a1 1/5arremessar');
         setSkill('sk55', 'rastrear', 'a1 Metaderastrear', 'a1 1/5rastrear');
 
-        // ====================================================================
-        // 4. PERÍCIAS COM ESPECIALIZAÇÃO E ESPAÇOS EM BRANCO (csk1 a csk19)
-        // Na versão pt-br, a ordem dos inputs customizados (csk1..csk19) é:
-        // csk1: Armas 1 (sk22)        | csk2: Arte/Ofício 1 (sk5) | csk3: Arte/Ofício 2 (sk6)
-        // csk4: Arte/Ofício 3 (sk7)   | csk5: Ciência 1 (sk47)    | csk6: Ciência 2 (sk48)
-        // csk7: Idioma Nativo (sk27)  | csk8: Idioma 1 (sk28)     | csk9: Idioma 2 (sk29)
-        // csk10: Idioma 3 (sk30)      | csk11: Luta 1 (sk18)      | csk12: Luta 2 (sk19)
-        // csk13: Pilotar (sk42)       | csk14: Sobrevivência(sk52)| csk15..19: Personalizado(sk56..60)
-        // ====================================================================
-
-        // Arte / Ofício 1, 2 e 3
+        // Especializações Customizadas
         setTxt('ARTES OU OFICIOS', val('csk2'));
         setSkill('sk5', 'arte', 'a1 Metadearte', 'a1 1/5arte');
-
         setTxt('abranco1a', val('csk3'));
         setSkill('sk6', 'abranco', 'a1 Metadeabranco', 'a1 1/5abranco');
-
         setTxt('abranco2a', val('csk4'));
         setSkill('sk7', 'a1a1branco', 'a1 Metadea1a1branco', 'a1 1/5a1a1branco');
-
-        // Ciência 1 e 2
         setTxt('abranco4', val('csk5'));
         setSkill('sk47', '4branco', 'a1 Metade4branco', 'a1 1/54branco');
-
         setTxt('abranco6', val('csk6'));
         setSkill('sk48', 'abranco6a', 'branco1 Metadeabranco6', 'branco1 1/5abranco6');
-
-        // Idioma (Nativo) e Idiomas 1, 2 e 3
         setTxt('LINGUA NATURALL', val('csk7'));
         setSkill('sk27', 'lingua natural', 'a1 Metadelingua natural', 'a1 1/5lingua natural');
-
         setTxt('LINGUA OUTRASS', val('csk8'));
         setSkill('sk28', 'lingua outra', 'a1 Metadelingua outra', 'a1 1/5lingua outra');
-
         setTxt('abranco8', val('csk9'));
         setSkill('sk29', 'abranco8a', 'a1 Metadecbranco0a', 'a1 1/5cbranco0a');
-
         setTxt('abranco9', val('csk10'));
         setSkill('sk30', 'abranco9a', 'abranco9aa', 'abranco10a');
-
-        // Luta 1 e 2
         setTxt('abranco10', val('csk11'));
         setSkill('sk18', 'abranco10aa', 'abranco10aaa', 'abranco11a');
-
         setTxt('abranco11', val('csk12'));
         setSkill('sk19', 'abranco11aa', 'abranco11aaa', 'abranco12aa');
-
-        // Pilotar e Sobrevivência
         setTxt('abranco13', val('csk13'));
         setSkill('sk42', 'pilotar', 'a1 Metadepilotar', 'a1 1/5pilotar');
-
         setTxt('abranco14', val('csk14'));
         setSkill('sk52', 'sobrevivencia', 'a1 Metadesobrevivencia', 'a1 1/5sobrevivencia');
-
-        // Armas 1 (usa linha em branco da 1ª coluna)
         setTxt('abranco3a', val('csk1'));
         setSkill('sk22', 'abranco3', 'a1 Metadeaabranco3', 'a1 1/5aabranco3');
-
-        // Perícias Personalizadas (sk56 a sk59) nos espaços em branco restantes do PDF
         setTxt('abranco7', val('csk15'));
         setSkill('sk56', 'abranco7a', 'branco2 Metadeabranco7a', 'branco2 1/5abranco7a');
-
         setTxt('abranco12', val('csk16'));
         setSkill('sk57', 'abranco13a', 'a1 Metadedbranco13aa', 'a1 1/5dbranco13');
-
         setTxt('abranco15', val('csk17'));
         setSkill('sk58', 'abranco14a', 'a1 Metadedbranco2', 'a1 1/5dbranco2');
-
         setTxt('abranco12aaaas', val('csk18'));
         setSkill('sk59', 'abranco15a', 'a1 Metadedbranco3', 'a1 1/5dbranco3');
 
         // ====================================================================
-        // 5. FOTO DO PERSONAGEM (Página 2 do PDF)
+        // 4. TABELA DE ARMAS E COMBATE (Linha 12 e Linha 13 do PDF)
+        // ====================================================================
+        // Arma 1 (Linha 12)
+        setTxt('armas12', val('armaNome1'));
+        const reg1 = val('armaReg1');
+        if (reg1) {
+            setTxt('regular12', reg1);
+            setTxt('dificil12', calcHalf(reg1));
+            setTxt('extremo12', calcFifth(reg1));
+        }
+        setTxt('dano12', val('armaDano1'));
+        setTxt('alcance12', val('armaAlc1'));
+        setTxt('ataques12', val('armaAtaq1'));
+        setTxt('munição12', val('armaMun1'));
+        setTxt('defeito12', val('armaDef1'));
+
+        // Arma 2 (Linha 13)
+        setTxt('armas13', val('armaNome2'));
+        const reg2 = val('armaReg2');
+        if (reg2) {
+            setTxt('regular13', reg2);
+            setTxt('dificil13', calcHalf(reg2));
+            setTxt('extremo13', calcFifth(reg2));
+        }
+        setTxt('dano13', val('armaDano2'));
+        setTxt('alcance13', val('armaAlc2'));
+        setTxt('ataques13', val('armaAtaq2'));
+        setTxt('munição13', val('armaMun2'));
+        setTxt('defeito13', val('armaDef2'));
+
+        // ====================================================================
+        // 5. ANTECEDENTES E DESCRIÇÃO PESSOAL (Página 2)
+        // ====================================================================
+        setTxt('Texto2', val('antDescricao'));
+        setTxt('Texto4', val('antIdeologias'));
+        setTxt('Texto6', val('antPessoas'));
+        setTxt('Texto7', val('antLocais'));
+        setTxt('Texto8', val('antPertences'));
+        setTxt('Texto10', val('antFerimentos'));
+        setTxt('Texto11', val('antTomos'));
+
+        // ====================================================================
+        // 6. FOTO DO PERSONAGEM (Página 2)
         // ====================================================================
         const imgEl = document.getElementById('characterimg');
         if (imgEl && imgEl.src && imgEl.src.startsWith('data:image/')) {
@@ -840,10 +844,10 @@ async function exportarParaPDF() {
                 const pages = pdfDoc.getPages();
                 if (pages.length > 1) {
                     pages[1].drawImage(embeddedImg, {
-                        x: 38,
-                        y: 635,
-                        width: 115,
-                        height: 135
+                        x: 475,
+                        y: 655,
+                        width: 85,
+                        height: 110
                     });
                 }
             } catch (imgErr) {
@@ -851,7 +855,6 @@ async function exportarParaPDF() {
             }
         }
 
-        // Salva o PDF mantendo os campos editáveis e faz o download
         const pdfBytes = await pdfDoc.save();
         const nomePersonagem = val('char1') || 'Investigador_CoC';
         const blob = new Blob([pdfBytes], { type: 'application/pdf' });

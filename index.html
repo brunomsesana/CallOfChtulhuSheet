@@ -39,6 +39,7 @@
         <h2 id="charName">Caracteristicas</h2>
         <div style="width: 20%;" class="container innerWin ih">
             <div id="characterimgdiv">
+                <p style="color: darkgray; font-size: smaller;">Recomenda-se o uso de imagens no tamanho ou proporção de 85x110 para exportação em pdf</p>
                 <img id="characterimg" src="https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/fa3a7d93635679.5e699fbf9de8a.jpg" alt="" style="width: 90%;">
             </div>
             <input type="file" id="characterimgsel" accept="image/gif, image/jpeg, image/png" class="form-control" style="display: none;" onchange="img(this)">
@@ -154,8 +155,45 @@
     </div>
     <div class="empty">
         
+        
     </div>
-    <div class="container shadow pad20 centralized window" style="margin-bottom: 200px;" id="skills">
+    <!-- NOVA SEÇÃO: COMBATE E ARMAS -->
+    <div class="container shadow pad20 centralized window" id="combateSection">
+        <h2 id="combateTitle">Combate e Armas</h2>
+        <div style="clear: both;"></div>
+        <div class="pad20"></div>
+
+        <div class="innerWin container" style="margin-bottom: 15px; padding: 15px;">
+            <h5 id="lblArma1">Arma 1 (Ex: Pistola .32)</h5>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <input type="text" class="form-control" id="armaNome1" placeholder="Nome da Arma" style="flex: 2;">
+                <input type="text" class="form-control" id="armaReg1" placeholder="Regular (%)" style="flex: 1;">
+                <input type="text" class="form-control" id="armaDano1" placeholder="Dano" style="flex: 1;">
+                <input type="text" class="form-control" id="armaAlc1" placeholder="Alcance" style="flex: 1;">
+                <input type="text" class="form-control" id="armaAtaq1" placeholder="Ataques" style="flex: 1;">
+                <input type="text" class="form-control" id="armaMun1" placeholder="Munição" style="flex: 1;">
+                <input type="text" class="form-control" id="armaDef1" placeholder="Defeito" style="flex: 1;">
+            </div>
+        </div>
+
+        <div class="innerWin container" style="margin-bottom: 15px; padding: 15px;">
+            <h5 id="lblArma2">Arma 2 (Ex: Espingarda / Fuzil)</h5>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <input type="text" class="form-control" id="armaNome2" placeholder="Nome da Arma" style="flex: 2;">
+                <input type="text" class="form-control" id="armaReg2" placeholder="Regular (%)" style="flex: 1;">
+                <input type="text" class="form-control" id="armaDano2" placeholder="Dano" style="flex: 1;">
+                <input type="text" class="form-control" id="armaAlc2" placeholder="Alcance" style="flex: 1;">
+                <input type="text" class="form-control" id="armaAtaq2" placeholder="Ataques" style="flex: 1;">
+                <input type="text" class="form-control" id="armaMun2" placeholder="Munição" style="flex: 1;">
+                <input type="text" class="form-control" id="armaDef2" placeholder="Defeito" style="flex: 1;">
+            </div>
+        </div>
+    </div>
+    <div class="empty">
+        
+        
+    </div>
+    <div class="container shadow pad20 centralized window" id="skills">
         <h2 id="sknam">Perícias</h2>
         <div style="clear: both;"></div>
         <div style="clear: both;" class="centralized container" id="customDDiv">
@@ -173,6 +211,50 @@
             <button class="btn btn-primary" onclick="Roll(this)" id="rerollbtn">ReRoll</button>
             <h5 style="font-size: calc(15px + 0.5vw);" id="using2" class="wtext"></h5>
             <input hidden type="text" name="using" id="using">
+        </div>
+    </div>
+    <div class="empty">
+        
+        
+    </div>
+    <div class="container shadow pad20 centralized window" style="margin-bottom: 200px;" id="antecedentesSection">
+        <h2 id="antecedentesTitle">Antecedentes</h2>
+        <div style="clear: both;"></div>
+        <div class="pad20"></div>
+        
+        <div class="innerWin container" style="margin-bottom: 15px; padding: 15px;">
+            <h5 id="lblDescricao">Descrição Pessoal</h5>
+            <textarea class="form-control" id="antDescricao" rows="3" placeholder="Aparência, traços de personalidade..."></textarea>
+        </div>
+
+        <div class="innerWin container" style="margin-bottom: 15px; padding: 15px;">
+            <h5 id="lblIdeologias">Ideologias / Crenças</h5>
+            <textarea class="form-control" id="antIdeologias" rows="2" placeholder="Crenças, filosofias..."></textarea>
+        </div>
+
+        <div class="innerWin container" style="margin-bottom: 15px; padding: 15px;">
+            <h5 id="lblPessoas">Pessoas Significativas</h5>
+            <textarea class="form-control" id="antPessoas" rows="2" placeholder="Quem o seu investigador ama, odeia ou protege..."></textarea>
+        </div>
+
+        <div class="innerWin container" style="margin-bottom: 15px; padding: 15px;">
+            <h5 id="lblLocais">Locais Importantes</h5>
+            <textarea class="form-control" id="antLocais" rows="2" placeholder="Lugares favoritos, refúgios..."></textarea>
+        </div>
+
+        <div class="innerWin container" style="margin-bottom: 15px; padding: 15px;">
+            <h5 id="lblPertences">Pertences Queridos</h5>
+            <textarea class="form-control" id="antPertences" rows="2" placeholder="Itens de valor sentimental..."></textarea>
+        </div>
+
+        <div class="innerWin container" style="margin-bottom: 15px; padding: 15px;">
+            <h5 id="lblFerimentos">Ferimentos e Cicatrizes / Fobias e Manias</h5>
+            <textarea class="form-control" id="antFerimentos" rows="2" placeholder="Cicatrizes marcantes, traumas e fobias..."></textarea>
+        </div>
+
+        <div class="innerWin container" style="margin-bottom: 15px; padding: 15px;">
+            <h5 id="lblTomos">Tomos Arcanos, Feitiços e Artefatos</h5>
+            <textarea class="form-control" id="antTomos" rows="2" placeholder="Livros de mitologia, feitiços aprendidos..."></textarea>
         </div>
     </div>
     <script>
