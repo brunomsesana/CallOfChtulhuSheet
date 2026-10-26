@@ -1,4 +1,3 @@
-createSkills(document.getElementById('lsel').value)
 createChar(document.getElementById('lsel').value)
 function Roll(t){
     var rand = Ro(100)
@@ -41,108 +40,53 @@ function RollCustom(){
     document.getElementById('using2').innerHTML = "Rolagem: " + document.getElementById('customd').value;
     document.getElementById('rerollbtn').setAttribute('onclick', 'RollCustom()')
 }
-function R(s){
-    var s2 = s.split("d")
-    s2 = s2.flat(5)
-    var res = 0;
-    var showRes = '';
-    for(var i = 0; i< s2.length; i++){
-        var s3;
-        if (s2[i].search(/\+/) != -1){
-            s3 = s2[i].split('+')
-            for(var e = 1; e < s3.length; e+=2){
-                s3.splice(e, 0, "+")
-            }
-            s2[i] = s3
-        }
-    }
-    s2 = s2.flat(5)
-    for(var i = 0; i < s2.length; i++){
-        if (s2[i].search(/\-/) != -1){
-            s3 = s2[i].split('-')
-            for(var e = 1; e < s3.length; e+=2){
-                s3.splice(e, 0, "-")
-            }
-            s2[i] = s3
-        }
-    }
-    s2 = s2.flat(5)
-    for(var i = 0; i < s2.length; i++){
-        if (s2[i].search(/\//) != -1){
-            s3 = s2[i].split('/')
-            for(var e = 1; e < s3.length; e+=2){
-                s3.splice(e, 0, "/")
-            }
-            s2[i] = s3
-        }
-    }
-    s2 = s2.flat(5)
-    for(var i = 0; i < s2.length; i++){
-        if (s2[i].search(/\*/) != -1){
-            s3 = s2[i].split('*')
-            for(var e = 1; e < s3.length; e+=2){
-                s3.splice(e, 0, "*")
-            }
-            s2[i] = s3
-        }
-    }
-    s2 = s2.flat(5)
-    for(var i = 0; i<s2.length; i++){
-        if(s2[i] == ''){
-            s2[i] = '1'
-        }
-    }
-    for (var i = 0; i< s2.length; i++){
-        if (s2[i] == '+' || s2[i] == '-' || s2[i] == '/' || s2[i] == '*'){
-            if (s2[i+2] == '+' || s2[i+2] == '-' || s2[i+2] == '/' || (i+2) >= s2.length || s2[i+2] == "*"){
-                if(s2[i] == '+'){
-                    res += parseFloat(s2[i+1])
-                    showRes += ' + [' + s2[i+1] + ']' 
-                } else if (s2[i] == '-'){
-                    res -= parseFloat(s2[i+1])
-                    showRes += ' - [' + s2[i+1] + ']' 
-                } else if (s2[i] == '/'){
-                    res = Math.floor(res / parseFloat(s2[i+1]))
-                    showRes += ' / [' + s2[i+1] + ']' 
-                } else if (s2[i] == '*'){
-                    res = Math.floor(res * parseFloat(s2[i+1]))
-                    showRes += ' * [' + s2[i+1] + ']' 
-                }
-            }
-        }
-        else {
-            if ((i+1) < s2.length){
-                if(s2[i+1] == '+' || s2[i+1] == '-' || s2[i+1] == '/' || s2[i+1] == '*'){
+// Substitua a sua função R(s) inteira por esta:
 
-                }
-                else {
-                    var rollRes = 0;
-                    var rollDices = [];
-                    if (s2[i-1] == '-'){
-                        showRes += ' - '
-                    } else if (s2[i-1] == '+'){
-                        showRes += ' + '
-                    }
-                    showRes += '['
-                    for(var o = 0; o<s2[i]; o++){
-                        var r = Ro(s2[i+1])
-                        if (s2[i-1] == '-'){
-                            rollRes -= r
-                            showRes += r + ', ';
-                        }else{
-                            rollRes += r
-                            showRes += r + ', ';
-                        }
-                        rollDices[rollDices.length] = r
-                    }
-                    showRes = showRes.slice(0, -2)
-                    showRes += ']'
-                    res += rollRes;
-                }
-            }
+function R(s) {
+    let exprStr = s.toLowerCase().replace(/\s+/g, ''); // Remove espaços em branco
+    let mathStr = exprStr;
+    let visualStr = exprStr;
+    
+    let regex = /(\d+)d(\d+)/g;
+    let rolagens = []; // Guarda os dados isolados de cada grupo (3d6, 1d8, etc)
+    
+    // 1º Passo: Rola os dados, soma para o cálculo matemático e salva os valores individuais
+    mathStr = exprStr.replace(regex, function(match, qty, faces) {
+        let q = parseInt(qty);
+        let f = parseInt(faces);
+        let sum = 0;
+        let rolls = [];
+        for (let i = 0; i < q; i++) {
+            let roll = Math.floor(Math.random() * f) + 1;
+            sum += roll;
+            rolls.push(roll);
         }
+        rolagens.push(rolls);
+        return sum; // Retorna apenas a soma para o JavaScript calcular depois
+    });
+
+    // 2º Passo: Troca a string visual colocando os colchetes (Ex: 3d6 vira ([3]+[5]+[1]))
+    let i = 0;
+    visualStr = exprStr.replace(regex, function() {
+        let rolls = rolagens[i];
+        i++;
+        if (rolls.length === 1) {
+            return `[${rolls[0]}]`;
+        } else {
+            return `([${rolls.join(']+[')}])`;
+        }
+    });
+    
+    let res = 0;
+    try {
+        // Usa o interpretador nativo para calcular respeitando a ordem matemática (* e / primeiro)
+        res = Math.floor(new Function('return ' + mathStr)());
+    } catch(e) {
+        return [0, "Fórmula inválida"];
     }
-    return [res, showRes];
+    
+    // Retorna o resultado final e a string formatada: "3d6*5 ➔ ([3]+[5]+[1])*5 = 45"
+    return [res, `${s} ➔ ${visualStr} = ${res}`];
 }
 function Ro(q){
     return Math.floor(Math.random() * q) + 1
@@ -205,288 +149,78 @@ function save() {
     var blob = new Blob([sheet],
                 { type: "text/plain;charset=utf-8" });
     saveAs(blob, n + ".sheet")
-    // $.post('/save', {skills: translateSk(), characteristics: translateChar(), sheetid: document.getElementById('sheetid').value, img: document.getElementById('characterimg').getAttribute('src').toString()})
-}
-function del(){
-    $.post('/erase', {sheetid: document.getElementById('sheetid').value})
-}
-function createSkills(l){
-    var csks = [];
-    document.getElementById('skills').innerHTML = '<h2 id="sknam">Perícias</h2><div style="clear: both;"></div><div style="clear: both;" class="centralized container" id="customDDiv"><input style="display: inline-block;" class="form-control centralized diceC" type="text" name="custom" id="customd" placeholder="Dados (Ex: 1d4+1d8+5)"><button class="btn btn-primary" onclick="RollCustom()">Roll</button></div>'
-    document.getElementById('skills').hidden = false
-    var sk;
-    var in1 = document.createElement('div')
-    in1.className = 'innerWin container sk'
-    document.getElementById('skills').insertBefore(in1, document.getElementById('customDDiv'))
-    var in2 = document.createElement('div')
-    in2.className = 'innerWin container sk'
-    document.getElementById('skills').insertBefore(in2, document.getElementById('customDDiv'))
-    var in3 = document.createElement('div')
-    in3.className = 'innerWin container sk'
-    document.getElementById('skills').insertBefore(in3, document.getElementById('customDDiv'))
-    var in4 = document.createElement('div')
-    in4.className = 'innerWin container sk'
-    document.getElementById('skills').insertBefore(in4, document.getElementById('customDDiv'))
-    var skpt = [
-        ["Antropologia", 1, false, 2], 
-        ["Armas de Fogo (Pistolas)", 20, false, 20], 
-        ["Armas de Fogo (Rifles)", 25, false, 21],
-        ["Armas 1", 25, true, 22],
-        ["Arqueologia", 1, false, 4],
-        ["Arremessar", 20, false, 54],
-        ["Arte/Ofício 1", 5, true, 5],
-        ["Arte/Ofício 2", 5, true, 6],
-        ["Arte/Ofício 3", 5, true, 7],
-        ["Avaliação", 5, false, 3],
-        ["Cavalgar", 5, false, 45],
-        ["Charme", 15, false, 8],
-        ["Chaveiro", 1, false, 34],
-        ["Ciência", 1, false, 46],
-        ["Ciência 1", 1, true, 47],
-        ["Ciência 2", 1, true, 48],
-        ["Consertos Elétricos", 10, false, 15],
-        ["Consertos Mecânicos", 5, false, 35],
-        ["Contabilidade", 5, false, 1],
-        ["Direito", 5, false, 31],
-        ["Dirigir Automóvel", 20, false, 14],
-        ["Disfarce", 5, false, 12],
-        ["Encontrar", 25, false, 50],
-        ["Escalar", 20, false, 9],
-        ["Escutar", 20, false, 33],
-        ["Esquivar", 0, false, 13],
-        ["Furtividade", 20, false, 51],
-        ["História", 5, false, 24],
-        ["Idioma (Nativo)", 0, true, 27],
-        ["Idioma 1", 1, true, 28],
-        ["Idioma 2", 1, true, 29],
-        ["Idioma 3", 1, true, 30],
-        ["Intimidação", 15, false, 25],
-        ["Lábia", 5, false, 16],
-        ["Luta (Briga)", 25, false, 17],
-        ["Luta 1", 25, true, 18],
-        ["Luta 2", 25, true, 19],
-        ["Medicina", 1, false, 36],
-        ["Mundo Natural", 10, false, 37],
-        ["Mythos de Cthulhu", 0, false, 11],
-        ["Natação", 20, false, 53],
-        ["Navegação", 10, false, 38],
-        ["Nível de Crédito", 0, false, 10],
-        ["Ocultismo", 5, false, 39],
-        ["Operar Maquinário Pesado", 1, false, 40],
-        ["Persuasão", 10, false, 41],
-        ["Pilotar", 1, true, 42],
-        ["Prestidigitação", 10, false, 49],
-        ["Primeiros Socorros", 30, false, 23],
-        ["Psicanálise", 1, false, 43],
-        ["Psicologia", 10, false, 44],
-        ["Rastrear", 10, false, 55],
-        ["Saltar", 20, false, 26],
-        ["Sobrevivência", 10, true, 52],
-        ["Usar Bibliotecas", 20, false, 32],
-        ["Personalizado", 0, true, 56],
-        ["Personalizado", 0, true, 57],
-        ["Personalizado", 0, true, 58],
-        ["Personalizado", 0, true, 59],
-        ["Personalizado", 0, true, 60]
-    ];
-    var sken = [
-        ["Accounting", 5, false, 1],
-        ["Anthropology", 1, false, 2], 
-        ["Appraise", 5, false, 3],
-        ["Archaeology", 1, false, 4],
-        ["Art/Craft 1", 5, true, 5],
-        ["Art/Craft 2", 5, true, 6],
-        ["Art/Craft 3", 5, true, 7],
-        ["Charm", 15, false, 8],
-        ["Climb", 20, false, 9],
-        ["Credit Rating", 0, false, 10],
-        ["Cthulhu Mythos", 0, false, 11],
-        ["Disguise", 5, false, 12],
-        ["Dodge", 0, false, 13],
-        ["Drive Automobile", 20, false, 14],
-        ["Electric Repair", 10, false, 15],
-        ["Fast Talk", 5, false, 16],
-        ["Fighting (Brawl)", 25, false, 17],
-        ["Fight 1", 25, true, 18],
-        ["Fight 2", 25, true, 19],
-        ["Firearms (Handguns)", 20, false, 20], 
-        ["Firearms (Rifles)", 25, false, 21],
-        ["Firearms 1", 25, true, 22],
-        ["First Aid", 30, false, 23],
-        ["History", 5, false, 24],
-        ["Intimidate", 15, false, 25],
-        ["Jump", 20, false, 26],
-        ["(Own) Language", 0, true, 27],
-        ["Language 1", 1, true, 28],
-        ["Language 2", 1, true, 29],
-        ["Language 3", 1, true, 30],
-        ["Law", 5, false, 31],
-        ["Library Use", 20, false, 32],
-        ["Listen", 20, false, 33],
-        ["Locksmith", 1, false, 34],
-        ["Mechanical Repair", 5, false, 35],
-        ["Medicine", 1, false, 36],
-        ["Natural World", 10, false, 37],
-        ["Navigate", 10, false, 38],
-        ["Occult", 5, false, 39],
-        ["Operate Heavy Machine", 1, false, 40],
-        ["Persuade", 10, false, 41],
-        ["Pilot", 1, true, 42],
-        ["Psychanalysis", 1, false, 43],
-        ["Psychology", 10, false, 44],
-        ["Ride", 5, false, 45],
-        ["Science", 1, false, 46],
-        ["Science 1", 1, true, 47],
-        ["Science 2", 1, true, 48],
-        ["Sleight of Hand", 10, false, 49],
-        ["Spot Hidden", 25, false, 50],
-        ["Stealth", 20, false, 51],
-        ["Survival", 10, true, 52],
-        ["Swim", 20, false, 53],
-        ["Throw", 20, false, 54],
-        ["Track", 10, false, 55],
-        ["Custom", 0, true, 56],
-        ["Custom", 0, true, 57],
-        ["Custom", 0, true, 58],
-        ["Custom", 0, true, 59],
-        ["Custom", 0, true, 60]
-    ];
-    if (l == 'pt-br'){
-        sk = skpt;
-    } else if (l == 'en-us'){
-        sk = sken;
-    }
-    for (var i = 0; i < sk.length; i++){
-        var div1 = document.createElement('div')
-        div1.setAttribute('name', "sk" + sk[i][3])
-        div1.className = 'container ininnerWin skill'
-        var div2 = document.createElement('div')
-        div2.style = 'clear: both;'
-        var div3 = document.createElement('div')
-        div3.style = "width: 45%;"
-        if (sk[i][2]){
-            var inp = document.createElement('input')
-            inp.setAttribute('onchange', 'cvalue(this)')
-            inp.className = 'form-control inp'
-            inp.style = 'float: left; margin-right: 10px;'
-            inp.placeholder = '(' + sk[i][0] + ')'
-            csks[csks.length] = "+1"
-            inp.id = "csk" + csks.length;
-            div3.appendChild(inp)
-        } else {
-            var h5 = document.createElement('h5')
-            h5.style = 'float: left; margin-right: 10px;'
-            h5.innerHTML = sk[i][0]
-            div3.appendChild(h5)
-        }
-        var div4 = document.createElement('div')
-        var btn = document.createElement('button')
-        btn.style = 'float: right; margin-left: 5px;'
-        btn.className = 'btn btn-primary'
-        btn.setAttribute('onclick', 'Roll(this)')
-        btn.innerHTML = 'Roll'
-        var inp2 = document.createElement('input')
-        inp2.setAttribute('onchange', 'cvalue(this)')
-        inp2.type = 'number'
-        inp2.name = 'sk' + sk[i][3]
-        inp2.id = 'sk' + sk[i][3]
-        inp2.className = 'form-control inp'
-        inp2.style = 'float: right; width: 10%;'
-        inp2.value = sk[i][1]
-        var div5 = document.createElement('div')
-        div5.style = 'clear: both;'
-        div4.appendChild(btn)
-        div4.appendChild(inp2)
-        div1.appendChild(div2)
-        div1.appendChild(div3)
-        div1.appendChild(div4)
-        div1.appendChild(div5)
-        if (i < 15){
-            in1.appendChild(div1)
-        } else if (i < 30){
-            in2.appendChild(div1)
-        } else if (i < 45){
-            in3.appendChild(div1)
-        } else if (i < 60){
-            in4.appendChild(div1)
-        }
-    }
-    if (l == "en-us"){
-        document.getElementById('sknam').innerHTML = "Skills"
-        document.getElementById('customd').placeholder = "Dice (E.g. 1d4+1d6)"
-    }
 }
 function createChar(l){
-    document.getElementById("char").hidden = false
-    if (l == "pt-br"){
+    document.getElementById("char").hidden = false;
+    const isPt = (l == "pt-br");
 
-        document.getElementById("char1").placeholder = "Nome do Personagem"
-        document.getElementById("char2").placeholder = "Nome do Player"
-        document.getElementById("char3").placeholder = "Ocupação"
-        document.getElementById("char4").placeholder = "Gênero"
-        document.getElementById("char5").placeholder = "Idade"
-        document.getElementById("char6").placeholder = "Residencia"
-        document.getElementById("char7").placeholder = "Naturalidade"
-        document.getElementById("strength").innerHTML = "Força:"
-        document.getElementById("constitution").innerHTML = "Constituição:"
-        document.getElementById("size").innerHTML = "Tamanho:"
-        document.getElementById("dexterity").innerHTML = "Destreza:"
-        document.getElementById("appearance").innerHTML = "Aparência:"
-        document.getElementById("education").innerHTML = "Educação:"
-        document.getElementById("inteligence").innerHTML = "Inteligencia:"
-        document.getElementById("power").innerHTML = "Poder:"
-        document.getElementById("appearance2").innerHTML = "Aparência:"
-        document.getElementById("education2").innerHTML = "Educação:"
-        document.getElementById("inteligence2").innerHTML = "Inteligencia:"
-        document.getElementById("power2").innerHTML = "Poder:"
-        document.getElementById("hp").innerHTML = "Pontos de Vida:"
-        document.getElementById("san").innerHTML = "Sanidade:"
-        document.getElementById("mp").innerHTML = "Pontos de Magia:"
-        document.getElementById("luckn").innerHTML = "Sorte:"
-        document.getElementById("btnimg").value = "Procurar"
-        document.getElementById('charName').innerHTML = 'Características'
-        document.getElementById('tlt').innerHTML = 'Ficha Automatica de Call of Cthulhu'
-        document.getElementById('dis').innerHTML = 'Disclaimer: este é um site feito por fã para deixar a ficha mais fácil de usar'
-        document.getElementById('saveBtn').innerHTML = 'Salvar'
-        document.getElementById('delBtn').innerHTML = 'Apagar'
-        document.getElementById('loadBtn').innerHTML = 'Carregar'
-        document.getElementById('newSh').innerHTML = 'Nova Ficha'
-        document.getElementById('htmlT').innerHTML = 'Ficha Call of Cthulhu'
-        document.getElementById('pdfBtn').innerHTML = 'Exportar PDF'
-    } else if (l == "en-us"){
-        document.getElementById("char1").placeholder = "Character Name"
-        document.getElementById("char2").placeholder = "Player Name"
-        document.getElementById("char3").placeholder = "Occupation"
-        document.getElementById("char4").placeholder = "Gender"
-        document.getElementById("char5").placeholder = "Age"
-        document.getElementById("char6").placeholder = "Residence"
-        document.getElementById("char7").placeholder = "Birthplace"
-        document.getElementById("strength").innerHTML = "Strength:"
-        document.getElementById("constitution").innerHTML = "Constitution:"
-        document.getElementById("size").innerHTML = "Size:"
-        document.getElementById("dexterity").innerHTML = "Dexterity:"
-        document.getElementById("appearance").innerHTML = "Appearance:"
-        document.getElementById("education").innerHTML = "Education:"
-        document.getElementById("inteligence").innerHTML = "Inteligence:"
-        document.getElementById("power").innerHTML = "Power:"
-        document.getElementById("appearance2").innerHTML = "Appearance:"
-        document.getElementById("education2").innerHTML = "Education:"
-        document.getElementById("inteligence2").innerHTML = "Inteligence:"
-        document.getElementById("power2").innerHTML = "Power:"
-        document.getElementById("hp").innerHTML = "Health Points:"
-        document.getElementById("san").innerHTML = "Sanity:"
-        document.getElementById("mp").innerHTML = "Magic Points:"
-        document.getElementById("luckn").innerHTML = "Luck:"
-        document.getElementById("btnimg").value = "Browse"
-        document.getElementById('charName').innerHTML = 'Characteristics'
-        document.getElementById('tlt').innerHTML = 'Call of Cthulhu Automatic Sheet'
-        document.getElementById('dis').innerHTML = 'Disclaimer: this is a fanmade website to make the sheet easier to use'
-        document.getElementById('saveBtn').innerHTML = 'Save'
-        document.getElementById('delBtn').innerHTML = 'Delete'
-        document.getElementById('loadBtn').innerHTML = 'Load'
-        document.getElementById('newSh').innerHTML = 'New Sheet'
-        document.getElementById('htmlT').innerHTML = 'Call of Cthulhu Sheet'
-        document.getElementById('pdfBtn').innerHTML = 'Export PDF'
+    document.getElementById("char1").placeholder = isPt ? "Nome do Personagem" : "Character Name";
+    document.getElementById("char2").placeholder = isPt ? "Nome do Player" : "Player Name";
+    document.getElementById("char3").placeholder = isPt ? "Ocupação" : "Occupation";
+    document.getElementById("char4").placeholder = isPt ? "Gênero" : "Gender";
+    document.getElementById("char5").placeholder = isPt ? "Idade" : "Age";
+    document.getElementById("char6").placeholder = isPt ? "Residência" : "Residence";
+    document.getElementById("char7").placeholder = isPt ? "Naturalidade" : "Birthplace";
+    document.getElementById("strength").innerHTML = isPt ? "Força:" : "Strength:";
+    document.getElementById("constitution").innerHTML = isPt ? "Constituição:" : "Constitution:";
+    document.getElementById("size").innerHTML = isPt ? "Tamanho:" : "Size:";
+    document.getElementById("dexterity").innerHTML = isPt ? "Destreza:" : "Dexterity:";
+    document.getElementById("appearance").innerHTML = isPt ? "Aparência:" : "Appearance:";
+    document.getElementById("education").innerHTML = isPt ? "Educação:" : "Education:";
+    document.getElementById("inteligence").innerHTML = isPt ? "Inteligência:" : "Intelligence:";
+    document.getElementById("power").innerHTML = isPt ? "Poder:" : "Power:";
+    document.getElementById("appearance2").innerHTML = isPt ? "Aparência:" : "Appearance:";
+    document.getElementById("education2").innerHTML = isPt ? "Educação:" : "Education:";
+    document.getElementById("inteligence2").innerHTML = isPt ? "Inteligência:" : "Intelligence:";
+    document.getElementById("power2").innerHTML = isPt ? "Poder:" : "Power:";
+    document.getElementById("hp").innerHTML = isPt ? "Pontos de Vida:" : "Health Points:";
+    document.getElementById("san").innerHTML = isPt ? "Sanidade:" : "Sanity:";
+    document.getElementById("mp").innerHTML = isPt ? "Pontos de Magia:" : "Magic Points:";
+    document.getElementById("luckn").innerHTML = isPt ? "Sorte:" : "Luck:";
+    document.getElementById("btnimg").value = isPt ? "Procurar" : "Browse";
+    document.getElementById('charName').innerHTML = isPt ? 'Características' : 'Characteristics';
+    document.getElementById('tlt').innerHTML = isPt ? 'Ficha Automática de Call of Cthulhu' : 'Call of Cthulhu Automatic Sheet';
+    document.getElementById('dis').innerHTML = isPt ? 'Disclaimer: este é um site feito por fã para deixar a ficha mais fácil de usar' : 'Disclaimer: this is a fanmade website to make the sheet easier to use';
+    document.getElementById('saveBtn').innerHTML = isPt ? 'Salvar' : 'Save';
+    document.getElementById('loadBtn').innerHTML = isPt ? 'Carregar' : 'Load';
+    document.getElementById('newSh').innerHTML = isPt ? 'Nova Ficha' : 'New Sheet';
+    document.getElementById('htmlT').innerHTML = isPt ? 'Ficha Call of Cthulhu' : 'Call of Cthulhu Sheet';
+    if (document.getElementById('pdfBtn')) document.getElementById('pdfBtn').innerHTML = isPt ? 'Exportar PDF' : 'Export PDF';
+    if (document.getElementById('wizardBtn')) document.getElementById('wizardBtn').innerHTML = isPt ? 'Criar Investigador' : 'Character Creator';
+    if (document.getElementById('wizardTitle')) document.getElementById('wizardTitle').innerHTML = isPt ? 'Criação de Investigador' : 'Investigator Creation';
+
+    // Tradução da Seção de Combate e Armas
+    if (document.getElementById('combateTitle')) {
+        document.getElementById('combateTitle').innerHTML = isPt ? 'Combate e Armas' : 'Combat & Weapons';
+        for (let i = 1; i <= 4; i++) {
+            if (document.getElementById('lblArma' + i)) document.getElementById('lblArma' + i).innerHTML = (isPt ? 'Arma ' : 'Weapon ') + i;
+            if (document.getElementById('armaNome' + i)) document.getElementById('armaNome' + i).placeholder = isPt ? 'Nome da Arma' : 'Weapon Name';
+            if (document.getElementById('armaReg' + i)) document.getElementById('armaReg' + i).placeholder = 'Regular (%)';
+            if (document.getElementById('armaDano' + i)) document.getElementById('armaDano' + i).placeholder = isPt ? 'Dano' : 'Damage';
+            if (document.getElementById('armaAlc' + i)) document.getElementById('armaAlc' + i).placeholder = isPt ? 'Alcance' : 'Range';
+            if (document.getElementById('armaAtaq' + i)) document.getElementById('armaAtaq' + i).placeholder = isPt ? 'Ataques' : 'Attacks';
+            if (document.getElementById('armaMun' + i)) document.getElementById('armaMun' + i).placeholder = isPt ? 'Munição' : 'Ammo';
+            if (document.getElementById('armaDef' + i)) document.getElementById('armaDef' + i).placeholder = isPt ? 'Defeito' : 'Malf';
+        }
+    }
+
+    // Tradução da Seção de Antecedentes
+    if (document.getElementById('antecedentesTitle')) {
+        document.getElementById('antecedentesTitle').innerHTML = isPt ? 'Antecedentes' : 'Background';
+        document.getElementById('lblDescricao').innerHTML = isPt ? 'Descrição Pessoal' : 'Personal Description';
+        document.getElementById('antDescricao').placeholder = isPt ? 'Aparência, traços de personalidade...' : 'Appearance, personality traits...';
+        document.getElementById('lblIdeologias').innerHTML = isPt ? 'Ideologias / Crenças' : 'Ideology / Beliefs';
+        document.getElementById('antIdeologias').placeholder = isPt ? 'Crenças, filosofias...' : 'Beliefs, philosophies...';
+        document.getElementById('lblPessoas').innerHTML = isPt ? 'Pessoas Significativas' : 'Significant People';
+        document.getElementById('antPessoas').placeholder = isPt ? 'Quem o seu investigador ama, odeia ou protege...' : 'Who your investigator loves, hates, or protects...';
+        document.getElementById('lblLocais').innerHTML = isPt ? 'Locais Importantes' : 'Meaningful Locations';
+        document.getElementById('antLocais').placeholder = isPt ? 'Lugares favoritos, refúgios...' : 'Favorite places, safe havens...';
+        document.getElementById('lblPertences').innerHTML = isPt ? 'Pertences Queridos' : 'Treasured Possessions';
+        document.getElementById('antPertences').placeholder = isPt ? 'Itens de valor sentimental...' : 'Items of sentimental value...';
+        document.getElementById('lblFerimentos').innerHTML = isPt ? 'Ferimentos e Cicatrizes / Fobias e Manias' : 'Injuries & Scars / Phobias & Manias';
+        document.getElementById('antFerimentos').placeholder = isPt ? 'Cicatrizes marcantes, traumas e fobias...' : 'Notable scars, traumas, and phobias...';
+        document.getElementById('lblTomos').innerHTML = isPt ? 'Tomos Arcanos, Feitiços e Artefatos' : 'Arcane Tomes, Spells & Artifacts';
+        document.getElementById('antTomos').placeholder = isPt ? 'Livros de mitologia, feitiços aprendidos...' : 'Mythos books, learned spells...';
     }
 }
 function langu(l){
@@ -865,3 +599,757 @@ async function exportarParaPDF() {
         alert('Não foi possível exportar o PDF. Verifique se o arquivo FICHA-EDITAVEL-CHAMADO-DE-CTHULHU.pdf está na mesma pasta.');
     }
 }
+// ============================================================================
+// CRIADOR DE INVESTIGADOR GUIADO COMPLETO (PT-BR & EN-US)
+// ============================================================================
+
+const ATTR_KEYS = ['FOR', 'CON', 'TAM', 'DES', 'APA', 'INT', 'POD', 'EDU'];
+
+// Dicionário das 60 Perícias da Ficha
+const SKILL_CATALOG = {
+    1:  { pt: "Contabilidade", en: "Accounting", base: 5 },
+    2:  { pt: "Antropologia", en: "Anthropology", base: 1 },
+    3:  { pt: "Avaliação", en: "Appraise", base: 5 },
+    4:  { pt: "Arqueologia", en: "Archaeology", base: 1 },
+    5:  { pt: "Arte/Ofício 1", en: "Art/Craft 1", base: 5, custom: true },
+    6:  { pt: "Arte/Ofício 2", en: "Art/Craft 2", base: 5, custom: true },
+    7:  { pt: "Arte/Ofício 3", en: "Art/Craft 3", base: 5, custom: true },
+    8:  { pt: "Charme", en: "Charm", base: 15 },
+    9:  { pt: "Escalar", en: "Climb", base: 20 },
+    10: { pt: "Nível de Crédito", en: "Credit Rating", base: 0 },
+    11: { pt: "Mythos de Cthulhu", en: "Cthulhu Mythos", base: 0, locked: true },
+    12: { pt: "Disfarce", en: "Disguise", base: 5 },
+    13: { pt: "Esquivar", en: "Dodge", base: 0 },
+    14: { pt: "Dirigir Automóvel", en: "Drive Automobile", base: 20 },
+    15: { pt: "Consertos Elétricos", en: "Electric Repair", base: 10 },
+    16: { pt: "Lábia", en: "Fast Talk", base: 5 },
+    17: { pt: "Luta (Briga)", en: "Fighting (Brawl)", base: 25 },
+    18: { pt: "Luta 1 (Agarrar/Arma)", en: "Fight 1 (Grapple/Weapon)", base: 25, custom: true },
+    19: { pt: "Luta 2 (Arma Branca)", en: "Fight 2 (Melee Weapon)", base: 25, custom: true },
+    20: { pt: "Armas de Fogo (Pistolas)", en: "Firearms (Handguns)", base: 20 },
+    21: { pt: "Armas de Fogo (Rifles)", en: "Firearms (Rifles)", base: 25 },
+    22: { pt: "Armas 1 (Arco/Artoc.)", en: "Firearms 1 (Bow/Crewed)", base: 25, custom: true },
+    23: { pt: "Primeiros Socorros", en: "First Aid", base: 30 },
+    24: { pt: "História", en: "History", base: 5 },
+    25: { pt: "Intimidação", en: "Intimidate", base: 15 },
+    26: { pt: "Saltar", en: "Jump", base: 20 },
+    27: { pt: "Idioma (Nativo)", en: "(Own) Language", base: 0, custom: true },
+    28: { pt: "Idioma 1", en: "Language 1", base: 1, custom: true },
+    29: { pt: "Idioma 2", en: "Language 2", base: 1, custom: true },
+    30: { pt: "Idioma 3", en: "Language 3", base: 1, custom: true },
+    31: { pt: "Direito", en: "Law", base: 5 },
+    32: { pt: "Usar Bibliotecas", en: "Library Use", base: 20 },
+    33: { pt: "Escutar", en: "Listen", base: 20 },
+    34: { pt: "Chaveiro", en: "Locksmith", base: 1 },
+    35: { pt: "Consertos Mecânicos", en: "Mechanical Repair", base: 5 },
+    36: { pt: "Medicina", en: "Medicine", base: 1 },
+    37: { pt: "Mundo Natural", en: "Natural World", base: 10 },
+    38: { pt: "Navegação", en: "Navigate", base: 10 },
+    39: { pt: "Ocultismo", en: "Occult", base: 5, locked: true },
+    40: { pt: "Operar Maquinário Pesado", en: "Operate Heavy Machine", base: 1 },
+    41: { pt: "Persuasão", en: "Persuade", base: 10 },
+    42: { pt: "Pilotar", en: "Pilot", base: 1, custom: true },
+    43: { pt: "Psicanálise", en: "Psychoanalysis", base: 1 },
+    44: { pt: "Psicologia", en: "Psychology", base: 10 },
+    45: { pt: "Cavalgar", en: "Ride", base: 5 },
+    46: { pt: "Ciência (Geral)", en: "Science (General)", base: 1 },
+    47: { pt: "Ciência 1 (Forense/Farm./Bio./Quím.)", en: "Science 1 (Forensics/Pharm./Bio./Chem.)", base: 1, custom: true },
+    48: { pt: "Ciência 2 (Astron./Fís./Geol.)", en: "Science 2 (Astron./Phys./Geol.)", base: 1, custom: true },
+    49: { pt: "Prestidigitação (Punga/Ocultar)", en: "Sleight of Hand (Pick Pocket/Conceal)", base: 10 },
+    50: { pt: "Encontrar", en: "Spot Hidden", base: 25 },
+    51: { pt: "Furtividade", en: "Stealth", base: 20 },
+    52: { pt: "Sobrevivência", en: "Survival", base: 10, custom: true },
+    53: { pt: "Natação", en: "Swim", base: 20 },
+    54: { pt: "Arremessar", en: "Throw", base: 20 },
+    55: { pt: "Rastrear", en: "Track", base: 10 },
+    56: { pt: "Personalizado 1 (Barganhar)", en: "Custom 1 (Bargain)", base: 5, custom: true },
+    57: { pt: "Personalizado 2", en: "Custom 2", base: 0, custom: true },
+    58: { pt: "Personalizado 3", en: "Custom 3", base: 0, custom: true },
+    59: { pt: "Personalizado 4", en: "Custom 4", base: 0, custom: true },
+    60: { pt: "Personalizado 5", en: "Custom 5", base: 0, custom: true }
+};
+
+const OCCUPATIONS = {
+    "actor": { pt: "Ator / Artista (Actor)", en: "Actor", desc: "Film/stage actors, musicians. Half EDU bonus, APP & DEX bonuses.", creditBase: "APA", eduMult: 2, fixed: [5, 10, 12, 16, 41, 44], choices: { count: 2, from: [17, 26, 20, 28, 19, 45] }, special: "actor" },
+    "alienist": { pt: "Alienista (Alienist)", en: "Alienist", desc: "Psychiatrist / Mental illness scholar.", creditBase: "EDU", eduMult: 4, fixed: [1, 47, 32, 36, 41, 48, 43, 44], choices: { count: 0, from: [] }, customLabels: { 47: "Forensics", 48: "Pharmacy" } },
+    "antiquarian": { pt: "Antiquário (Antiquarian)", en: "Antiquarian", desc: "Collector of rare artifacts.", creditBase: "EDU", eduMult: 4, fixed: [5, 56, 24, 31, 32, 28], choices: { count: 2, from: [2, 4, 16, 50] }, customLabels: { 56: "Bargain" } },
+    "artist": { pt: "Artista (Artist)", en: "Artist", desc: "Half EDU bonus, plus 2x (APP, INT, or DEX) to specific skills.", creditBase: "APA", eduMult: 2, fixed: [5, 6, 56, 10, 24, 32, 41, 44], choices: { count: 0, from: [] }, customLabels: { 5: "Art", 6: "Craft", 56: "Bargain" }, special: "artist" },
+    "athlete": { pt: "Atleta / Capanga (Athlete/Thug)", en: "Athlete/Thug", desc: "Half EDU bonus, plus 2x STR to physical skills.", creditBase: "FOR", eduMult: 2, fixed: [9, 17, 18, 13, 26, 45, 53, 54], choices: { count: 0, from: [] }, customLabels: { 18: "Grapple" }, special: "athlete" },
+    "author": { pt: "Autor / Linguista (Author/Linguist)", en: "Author/Linguist", desc: "Writer or language expert.", creditBase: "INT", eduMult: 4, fixed: [5, 10, 24, 32, 28, 41, 44], choices: { count: 1, from: [2, 4, 47, 37] }, customLabels: { 5: "Literature", 47: "Forensics" } },
+    "aviator": { pt: "Aviador (Aviator)", en: "Aviator", desc: "Test pilots, barnstormers, military pilots.", creditBase: "DES", eduMult: 4, fixed: [48, 15, 35, 38, 42, 50], choices: { count: 2, from: [56, 22, 57] }, customLabels: { 48: "Astronomy", 42: "Pilot Aircraft", 56: "Bargain", 22: "Crewed Weapon", 57: "Pilot Parachute" } },
+    "clergy": { pt: "Clérigo / Missionário (Clergy)", en: "Clergy", desc: "Pious individuals and religious scholars.", creditBase: "APA", eduMult: 4, fixed: [1, 56, 28, 41, 44], choices: { count: 3, from: [2, 5, 10, 24, 32, 36, 43] }, customLabels: { 56: "Bargain" } },
+    "executive": { pt: "Executivo Corporativo (Executive)", en: "Executive", desc: "Leader in business or manufacturing.", creditBase: "INT", eduMult: 4, fixed: [1, 56, 10, 16, 28, 44], choices: { count: 2, from: [5, 47, 15, 48, 31, 35, 41, 57] }, customLabels: { 56: "Bargain", 47: "Chemistry", 48: "Geology", 57: "Pharmacy" } },
+    "criminal": { pt: "Criminoso (Criminal)", en: "Criminal", desc: "Street-wise criminal.", creditBase: "INT", eduMult: 4, fixed: [16, 33, 44, 50], choices: { count: 4, from: [5, 17, 9, 14, 18, 56, 49, 12, 20, 51, 34, 19] }, customLabels: { 18: "Grapple", 56: "Bargain", 19: "Melee Weapon" } },
+    "detective": { pt: "Detetive (Detective)", en: "Detective", desc: "Private eye, bounty hunter, or cop.", creditBase: "INT", eduMult: 4, fixed: [17, 20, 33, 44, 51, 50], choices: { count: 2, from: [14, 18, 16, 32, 47, 5, 31, 55] }, customLabels: { 18: "Grapple", 47: "Forensics", 5: "Photography" } },
+    "dilettante": { pt: "Diletante / Socialite (Dilettante)", en: "Dilettante", desc: "Wealthy heir. Half EDU bonus, 2x (APP or INT) & 2x (INT or DEX) bonuses.", creditBase: "POD", eduMult: 2, fixed: [10], choices: { count: 7, from: [1, 2, 3, 4, 5, 8, 9, 12, 14, 16, 17, 20, 21, 24, 26, 28, 31, 32, 33, 37, 38, 41, 42, 44, 45, 50, 51, 53] }, special: "dilettante" },
+    "doctor": { pt: "Médico (Doctor of Medicine)", en: "Doctor", desc: "Medical professional.", creditBase: "EDU", eduMult: 4, fixed: [32, 36, 48, 23, 47], choices: { count: 3, from: [1, 46, 10, 41, 44] }, customLabels: { 47: "Forensics", 48: "Pharmacy", 46: "Biology" } },
+    "drifter": { pt: "Andarilho (Drifter)", en: "Drifter", desc: "Itinerant traveler.", creditBase: "POD", eduMult: 4, fixed: [56, 49, 16, 51, 33, 44, 57], choices: { count: 1, from: [5, 6, 35, 37, 50] }, customLabels: { 56: "Bargain", 57: "Hide" } },
+    "engineer": { pt: "Engenheiro (Engineer)", en: "Engineer", desc: "Designer and manufacturer.", creditBase: "INT", eduMult: 4, fixed: [47, 5, 10, 15, 48, 35, 40, 46], choices: { count: 0, from: [] }, customLabels: { 47: "Chemistry", 5: "Craft", 48: "Geology", 46: "Physics" } },
+    "farmer": { pt: "Fazendeiro (Farmer/Forester)", en: "Farmer", desc: "Rural farmer or forester.", creditBase: "CON", eduMult: 4, fixed: [1, 56, 5, 15, 35, 37], choices: { count: 2, from: [14, 21, 40, 42, 45, 55] }, customLabels: { 56: "Bargain", 5: "Craft", 42: "Pilot Boat" } },
+    "guide": { pt: "Guia / Caçador (Guide/Hunter)", en: "Guide", desc: "Professional guide or big game hunter.", creditBase: "CON", eduMult: 4, fixed: [5, 9, 37, 38, 33, 21, 50, 55], choices: { count: 0, from: [] }, customLabels: { 5: "Craft" } },
+    "journalist": { pt: "Jornalista (Journalist)", en: "Journalist", desc: "Reporter or columnist.", creditBase: "APA", eduMult: 4, fixed: [1, 16, 32, 33, 28, 5, 41, 44], choices: { count: 0, from: [] }, customLabels: { 5: "Photography" } },
+    "lawyer": { pt: "Advogado (Lawyer)", en: "Lawyer", desc: "Practitioner of the law.", creditBase: "APA", eduMult: 4, fixed: [56, 10, 16, 31, 32, 28, 41, 44], choices: { count: 0, from: [] }, customLabels: { 56: "Bargain" } },
+    "nurse": { pt: "Enfermeiro(a) (Nurse)", en: "Nurse", desc: "Medical assistant in care.", creditBase: "CON", eduMult: 4, fixed: [1, 18, 23, 33, 36, 41, 48, 44], choices: { count: 0, from: [] }, customLabels: { 18: "Grapple", 48: "Pharmacy" } },
+    "noble": { pt: "Nobre (Noble)", en: "Noble", desc: "Member of the aristocracy.", creditBase: "APA", eduMult: 4, fixed: [5, 10, 24, 31, 28, 45], choices: { count: 2, from: [1, 6, 21, 19] }, customLabels: { 5: "Art", 6: "Craft", 19: "Melee Weapon" } },
+    "parapsychologist": { pt: "Parapsicólogo (Parapsychologist)", en: "Parapsychologist", desc: "Researcher into mystical phenomena.", creditBase: "POD", eduMult: 4, fixed: [5, 2, 24, 28, 32, 6, 44], choices: { count: 0, from: [] }, customLabels: { 5: "Art", 6: "Photography" } },
+    "professor": { pt: "Professor / Acadêmico (Professor)", en: "Professor", desc: "University scholar.", creditBase: "INT", eduMult: 4, fixed: [10, 32, 28, 41], choices: { count: 4, from: [4, 2, 48, 46, 47, 37, 24, 5] }, customLabels: { 5: "Photography", 46: "Biology/Physics", 47: "Chemistry", 48: "Astronomy/Geology" } },
+    "rancher": { pt: "Rancheiro / Veterinário (Rancher)", en: "Rancher", desc: "Rancher or rural veterinarian.", creditBase: "CON", eduMult: 4, fixed: [56, 5, 10, 18, 36, 35, 37, 45, 57], choices: { count: 0, from: [] }, customLabels: { 56: "Bargain", 5: "Craft", 18: "Grapple", 57: "Rope" } },
+    "sailor": { pt: "Marinheiro (Sailor)", en: "Sailor", desc: "Sailor or boat captain.", creditBase: "INT", eduMult: 4, fixed: [48, 35, 37, 38, 42, 50, 53], choices: { count: 1, from: [1, 56, 9, 5, 22, 15] }, customLabels: { 48: "Astronomy", 42: "Pilot Boat", 56: "Bargain", 22: "Crewed Weapon" } },
+    "soldier": { pt: "Soldado (Soldier)", en: "Soldier", desc: "Professional soldier. Half EDU bonus, plus 2x DEX to 5 professional skills.", creditBase: "CON", eduMult: 2, fixed: [9, 17, 19, 20, 21], choices: { count: 3, from: [1, 22, 14, 23, 38, 35, 42, 51, 54, 45] }, customLabels: { 19: "Melee Weapon", 22: "Crewed Weapon", 42: "Pilot Boat" }, special: "soldier" },
+    "tradesman": { pt: "Comerciante / Artesão (Tradesman)", en: "Tradesman", desc: "Skilled laborer. Half EDU bonus, plus 2x (DEX or INT) to 5 professional skills.", creditBase: "INT", eduMult: 2, fixed: [56, 5, 14, 15, 35, 44], choices: { count: 2, from: [1, 9, 16, 34, 41] }, customLabels: { 56: "Bargain", 5: "Craft" }, special: "tradesman" },
+    "tribal": { pt: "Membro Tribal (Tribal Member)", en: "Tribal", desc: "Isolated culture native.", creditBase: "FOR", eduMult: 4, fixed: [9, 26, 33, 37, 53], choices: { count: 3, from: [22, 17, 5, 18, 19, 50, 54, 55] }, customLabels: { 22: "Archery", 5: "Craft", 18: "Grapple", 19: "Melee Weapon" } },
+    "custom": { pt: "Personalizado (Custom Occupation)", en: "Custom", desc: "Escolha 8 perícias (EDU x 4).", creditBase: "EDU", eduMult: 4, fixed: [], choices: { count: 8, from: Object.keys(SKILL_CATALOG).map(Number).filter(id => !SKILL_CATALOG[id].locked) } }
+};
+
+let wiz = {};
+
+function isPtLang() {
+    const el = document.getElementById('lsel');
+    return el && el.value === 'pt-br';
+}
+
+function t(pt, en) {
+    return isPtLang() ? pt : en;
+}
+
+function getSkillName(id) {
+    const sk = SKILL_CATALOG[id];
+    if (!sk) return "";
+    const customLabel = wiz.customSkillLabels && wiz.customSkillLabels[id];
+    const baseName = isPtLang() ? sk.pt : sk.en;
+    return customLabel ? `${baseName} [${customLabel}]` : baseName;
+}
+
+function iniciarWizard() {
+    wiz = {
+        baseAttr: { FOR: 50, CON: 50, TAM: 50, DES: 50, APA: 50, INT: 50, POD: 50, EDU: 50, SORTE: 50 },
+        attr: { FOR: 50, CON: 50, TAM: 50, DES: 50, APA: 50, INT: 50, POD: 50, EDU: 50, SORTE: 50 },
+        rolledPool3d6: [], rolledPool2d6: [], reqPen: 0, idade: 20, ocupKey: '', 
+        occSkillsFinal: [], customSkillLabels: {}, skillBonuses: {},
+        ptsOcupacaoTotal: 0, ptsInteresseTotal: 0, gastosOcc: {}, gastosInt: {}
+    };
+    document.getElementById('wizardModal').style.display = 'block';
+    step1Metodo();
+}
+
+function fecharWizard() {
+    document.getElementById('wizardModal').style.display = 'none';
+}
+
+// ============================================================================
+// PASSO 1: MÉTODO DE ATRIBUTOS
+// ============================================================================
+function step1Metodo() {
+    document.getElementById('wizardBody').innerHTML = `
+        <h4 style="color: #a1eae9;">${t('Passo 1: Geração de Atributos', 'Step 1: Attribute Generation')}</h4>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button class="btn btn-primary" onclick="gerarSorteioDireto()"><strong>${t('1. Sorteio Direto (Editável):', '1. Direct Roll (Editable):')}</strong> ${t('Rola tudo automaticamente e permite edição fina dos valores.', 'Rolls everything automatically and allows tweaking.')}</button>
+            <button class="btn btn-primary" onclick="iniciarAlocacaoRolagens()"><strong>${t('2. Alocação de Rolagens:', '2. Roll & Allocate:')}</strong> ${t('Rola os valores da edição e permite alocá-los manualmente.', 'Roll values per rules and manually assign them.')}</button>
+            <button class="btn btn-primary" onclick="gerarPadrao()"><strong>${t('3. Valores Padrão:', '3. Standard Array:')}</strong> ${t('Distribua os valores fixos 80, 70, 60, 60, 50, 50, 50, 40.', 'Distribute fixed array (80, 70, 60...).')}</button>
+            <button class="btn btn-primary" onclick="gerarPontos()"><strong>${t('4. Compra de Pontos:', '4. Point Buy:')}</strong> ${t('Distribua 460 pontos (Mín 15, Máx 90).', 'Distribute 460 points (Min 15, Max 90).')}</button>
+        </div>
+    `;
+    document.getElementById('wizardFooter').innerHTML = `<button class="btn btn-secondary" onclick="fecharWizard()">${t('Cancelar', 'Cancel')}</button>`;
+}
+
+function gerarSorteioDireto() {
+    wiz.rollDetails = {};
+    ATTR_KEYS.forEach(k => {
+        let expr = ['TAM', 'INT', 'EDU'].includes(k) ? '(2d6+6)*5' : '3d6*5';
+        let res = R(expr); // Puxa direto da nossa nova função R(s)
+        wiz.baseAttr[k] = res[0];
+        wiz.rollDetails[k] = res[1]; // Ex: "(2d6+6)*5 ➔ (([4]+[2])+6)*5 = 60"
+    });
+    let resSorte = R("3d6*5");
+    wiz.baseAttr.SORTE = resSorte[0];
+    wiz.rollDetails.SORTE = resSorte[1];
+    
+    gerarLivre(); 
+}
+
+function gerarLivre() {
+    let html = `<h4 style="color: #a1eae9;">${t('Sorteio Direto / Edição Fina', 'Direct Roll / Tweaking')}</h4>
+        <p>${t('Estes foram os valores sorteados. Você pode alterá-los livremente antes de prosseguir:', 'These are the rolled values. You can freely change them before proceeding:')}</p><div class="wiz-grid">`;
+    
+    [...ATTR_KEYS, 'SORTE'].forEach(k => {
+        // Se houver um detalhe salvo para este atributo, renderiza o texto minúsculo abaixo
+        let detalhe = (wiz.rollDetails && wiz.rollDetails[k]) 
+            ? `<br><small style="font-size:11px; color:#20333c; font-weight:bold;">${wiz.rollDetails[k]}</small>` 
+            : '';
+            
+        html += `<div class="wiz-box" style="padding-bottom: 5px;">
+                    <label>${k}</label>
+                    <input type="number" class="form-control" id="free_${k}" value="${wiz.baseAttr[k]}">
+                    ${detalhe}
+                 </div>`;
+    });
+    
+    document.getElementById('wizardBody').innerHTML = html + `</div>`;
+    document.getElementById('wizardFooter').innerHTML = `
+        <button class="btn btn-secondary" onclick="step1Metodo()">${t('Voltar', 'Back')}</button>
+        <button class="btn btn-warning" onclick="gerarSorteioDireto()">${t('Rerolar Tudo', 'Reroll All')}</button>
+        <button class="btn btn-success" onclick="validarLivre()">${t('Próximo', 'Next')}</button>
+    `;
+}
+
+function validarLivre() {
+    [...ATTR_KEYS, 'SORTE'].forEach(k => { wiz.baseAttr[k] = parseInt(document.getElementById('free_' + k).value, 10) || 15; });
+    step2Idade();
+}
+
+function iniciarAlocacaoRolagens() {
+    let rolls3d6 = [R("3d6*5"), R("3d6*5"), R("3d6*5"), R("3d6*5"), R("3d6*5")];
+    let rolls2d6 = [R("(2d6+6)*5"), R("(2d6+6)*5"), R("(2d6+6)*5")];
+    let resSorte = R("3d6*5");
+    
+    // Pega o [0] (resultado matemático) para colocar no select
+    wiz.rolledPool3d6 = rolls3d6.map(r => r[0]).sort((a,b)=>b-a);
+    wiz.rolledPool2d6 = rolls2d6.map(r => r[0]).sort((a,b)=>b-a);
+    wiz.baseAttr.SORTE = resSorte[0];
+    
+    // Pega o [1] (texto com colchetes) para mostrar ao jogador
+    let det3d6 = rolls3d6.map(r => r[1]).join('<br>');
+    let det2d6 = rolls2d6.map(r => r[1]).join('<br>');
+    
+    let html = `<h4 style="color: #a1eae9;">${t('Alocação de Rolagens', 'Roll & Allocate')}</h4>
+        <div style="font-size: 13px; margin-bottom: 10px; background: #788c94; color: #20333c; padding: 10px; border-radius: 8px;">
+            <strong>${t('Rolagens (3d6x5):', 'Rolls (3d6x5):')}</strong><br>${det3d6}<br><br>
+            <strong>${t('Rolagens ((2d6+6)x5):', 'Rolls ((2d6+6)x5):')}</strong><br>${det2d6}
+        </div>
+        <div class="wiz-grid">${['FOR', 'CON', 'DES', 'APA', 'POD'].map(k => `<div class="wiz-box"><label>${k}</label><select class="form-control alloc-3d6" id="alloc_${k}" onchange="atualizarDropdownsPool('alloc-3d6', wiz.rolledPool3d6)"></select></div>`).join('')}</div>
+        <div class="wiz-grid">${['TAM', 'INT', 'EDU'].map(k => `<div class="wiz-box"><label>${k}</label><select class="form-control alloc-2d6" id="alloc_${k}" onchange="atualizarDropdownsPool('alloc-2d6', wiz.rolledPool2d6)"></select></div>`).join('')}</div>
+        <div style="margin-top:10px;">
+            <label>SORTE (3d6x5)</label>
+            <input type="number" class="form-control" id="alloc_SORTE" value="${wiz.baseAttr.SORTE}" style="width:100px;">
+            <small style="display:block; font-size:12px; color:#a1eae9;">${resSorte[1]}</small>
+        </div>
+    `;
+    document.getElementById('wizardBody').innerHTML = html;
+    document.getElementById('wizardFooter').innerHTML = `
+        <button class="btn btn-secondary" onclick="step1Metodo()">${t('Voltar', 'Back')}</button>
+        <button class="btn btn-warning" onclick="iniciarAlocacaoRolagens()">${t('Rerolar Dados', 'Reroll Dice')}</button>
+        <button class="btn btn-success" onclick="validarAlocacao()">${t('Próximo', 'Next')}</button>
+    `;
+    atualizarDropdownsPool('alloc-3d6', wiz.rolledPool3d6);
+    atualizarDropdownsPool('alloc-2d6', wiz.rolledPool2d6);
+}
+
+const STANDARD_POOL = [80, 70, 60, 60, 50, 50, 50, 40];
+function gerarPadrao() {
+    wiz.baseAttr.SORTE = R("3d6*5")[0];
+    let html = `<h4 style="color: #a1eae9;">${t('Valores Padrão', 'Standard Array')}</h4><div class="wiz-grid">`;
+    ATTR_KEYS.forEach(k => { html += `<div class="wiz-box"><label>${k}</label><select class="form-control padrao-sel" id="padrao_${k}" onchange="atualizarDropdownsPool('padrao-sel', STANDARD_POOL)"></select></div>`; });
+    html += `</div><div style="margin-top:10px;"><label>SORTE (3d6x5)</label><input type="number" class="form-control" id="padrao_SORTE" value="${wiz.baseAttr.SORTE}" style="width:100px;"></div>`;
+    document.getElementById('wizardBody').innerHTML = html;
+    document.getElementById('wizardFooter').innerHTML = `<button class="btn btn-secondary" onclick="step1Metodo()">${t('Voltar', 'Back')}</button><button class="btn btn-success" onclick="validarPadrao()">${t('Próximo', 'Next')}</button>`;
+    atualizarDropdownsPool('padrao-sel', STANDARD_POOL);
+}
+
+function atualizarDropdownsPool(className, poolArray) {
+    const selects = Array.from(document.querySelectorAll('.' + className));
+    const current = selects.map(s => s.value);
+    selects.forEach((sel, idx) => {
+        let counts = {};
+        poolArray.forEach(v => counts[v] = (counts[v] || 0) + 1);
+        current.forEach((val, oIdx) => { if (oIdx !== idx && val !== "") counts[val] = (counts[val] || 0) - 1; });
+        let opts = `<option value="">-</option>`;
+        [...new Set(poolArray)].forEach(v => {
+            if (counts[String(v)] > 0 || String(v) === current[idx]) {
+                opts += `<option value="${v}" ${String(v) === current[idx] ? 'selected' : ''}>${v}</option>`;
+            }
+        });
+        sel.innerHTML = opts;
+    });
+}
+
+function validarAlocacao() {
+    for (let k of ATTR_KEYS) {
+        let v = parseInt(document.getElementById('alloc_' + k).value, 10);
+        if (isNaN(v)) return alert(t("Aloque todos os valores!", "Allocate all values!"));
+        wiz.baseAttr[k] = v;
+    }
+    wiz.baseAttr.SORTE = parseInt(document.getElementById('alloc_SORTE').value, 10) || 15;
+    step2Idade();
+}
+function validarPadrao() {
+    for (let k of ATTR_KEYS) {
+        let v = parseInt(document.getElementById('padrao_' + k).value, 10);
+        if (isNaN(v)) return alert(t("Selecione todos os valores!", "Select all values!"));
+        wiz.baseAttr[k] = v;
+    }
+    wiz.baseAttr.SORTE = parseInt(document.getElementById('padrao_SORTE').value, 10) || 15;
+    step2Idade();
+}
+
+function gerarPontos() {
+    wiz.baseAttr.SORTE = R("3d6*5")[0];
+    let html = `<h4 style="color: #a1eae9;">${t('Compra de Pontos', 'Point Buy')}</h4>
+        <p>${t('Pontos Restantes:', 'Remaining Points:')} <strong id="ptsRestantes" style="color:#a1eae9; font-size:18px;">60</strong></p>
+        <div class="wiz-grid">`;
+    ATTR_KEYS.forEach(k => { html += `<div class="wiz-box"><label>${k}</label><input type="number" class="form-control pt-input" id="pt_${k}" value="50" oninput="calcPontos()"></div>`; });
+    html += `</div><div style="margin-top:10px;"><label>SORTE (Fora dos 460 pts)</label><input type="number" class="form-control" id="pt_SORTE" value="${wiz.baseAttr.SORTE}" style="width:100px;"></div>`;
+    document.getElementById('wizardBody').innerHTML = html;
+    document.getElementById('wizardFooter').innerHTML = `<button class="btn btn-secondary" onclick="step1Metodo()">${t('Voltar', 'Back')}</button><button class="btn btn-success" onclick="validarPontos()">${t('Próximo', 'Next')}</button>`;
+    calcPontos();
+}
+
+function calcPontos() {
+    let tot = Array.from(document.querySelectorAll('.pt-input')).reduce((sum, el) => sum + (parseInt(el.value) || 0), 0);
+    document.getElementById('ptsRestantes').innerText = 460 - tot;
+}
+
+function validarPontos() {
+    let tot = 0;
+    for (let k of ATTR_KEYS) {
+        let v = parseInt(document.getElementById('pt_' + k).value, 10) || 0;
+        if (v < 15 || v > 90) return alert(t(`O atributo ${k} deve ficar entre 15 e 90.`, `Attribute ${k} must be between 15 and 90.`));
+        tot += v;
+        wiz.baseAttr[k] = v;
+    }
+    if (tot !== 460) return alert(t(`A soma totalizou ${tot}. Você deve usar exatamente 460 pontos.`, `Sum is ${tot}. You must spend exactly 460 points.`));
+    wiz.baseAttr.SORTE = parseInt(document.getElementById('pt_SORTE').value, 10) || 15;
+    step2Idade();
+}
+
+// ============================================================================
+// PASSO 2: IDADE (Cálculos Editáveis e Penalidade Distribuída)
+// ============================================================================
+function step2Idade() {
+    document.getElementById('wizardBody').innerHTML = `
+        <h4 style="color: #a1eae9;">${t('Passo 2: Idade do Investigador', 'Step 2: Investigator Age')}</h4>
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+            <label><strong>${t('Idade:', 'Age:')}</strong></label>
+            <input type="number" id="wizIdade" class="form-control" value="${wiz.idade || 20}" style="width:80px;">
+            <button class="btn btn-primary btn-sm" onclick="previaIdade()">${t('Calcular Testes', 'Calculate Rolls')}</button>
+        </div>
+        <div id="idadePreviewBox"></div>
+    `;
+    document.getElementById('wizardFooter').innerHTML = `<button class="btn btn-secondary" onclick="step1Metodo()">${t('Voltar', 'Back')}</button><button class="btn btn-success" onclick="confirmarIdade()">${t('Avançar', 'Next')}</button>`;
+    previaIdade(); // Executa ao abrir a tela
+}
+
+function previaIdade() {
+    wiz.attr = Object.assign({}, wiz.baseAttr);
+    wiz.idade = parseInt(document.getElementById('wizIdade').value, 10) || 20;
+    
+    let log = [];
+    wiz.reqPen = 0;
+    let testesEdu = 0;
+    let apaPen = 0;
+    let html = `<hr style="background:#788c94;">`;
+
+    // MOSTRA OS ATRIBUTOS ORIGINAIS (Antes das modificações)
+    html += `
+        <div style="font-size:12px; color:#20333c; background:#a1eae9; padding:8px; border-radius:5px; margin-bottom:15px; text-align: center; font-weight: bold;">
+            ${t('Atributos Originais (Antes da Idade):', 'Original Attributes (Before Age):')}<br>
+            FOR:${wiz.baseAttr.FOR} | CON:${wiz.baseAttr.CON} | TAM:${wiz.baseAttr.TAM} | DES:${wiz.baseAttr.DES} | APA:${wiz.baseAttr.APA} | INT:${wiz.baseAttr.INT} | POD:${wiz.baseAttr.POD} | EDU:${wiz.baseAttr.EDU}
+        </div>
+    `;
+
+    if (wiz.idade >= 15 && wiz.idade <= 19) {
+        wiz.attr.FOR = Math.max(1, wiz.attr.FOR - 5);
+        wiz.attr.TAM = Math.max(1, wiz.attr.TAM - 5);
+        wiz.attr.EDU = Math.max(1, wiz.attr.EDU - 5);
+        
+        // Rola Sorte com detalhes usando a R(s)
+        let rSorte = R("3d6*5");
+        let s2 = rSorte[0];
+        wiz.attr.SORTE = Math.max(wiz.baseAttr.SORTE, s2);
+        
+        log.push(t(
+            `<strong>Idade 15-19:</strong> FOR, TAM e EDU reduzidos em 5.<br>Sorte rolada com vantagem: Base era ${wiz.baseAttr.SORTE}, Nova rolagem: <em>${rSorte[1]}</em>.<br>➔ Sorte Final: <strong style="color:white;">${wiz.attr.SORTE}</strong>`, 
+            `<strong>Age 15-19:</strong> STR, SIZ, and EDU reduced by 5.<br>Luck rolled with advantage: Base was ${wiz.baseAttr.SORTE}, New roll: <em>${rSorte[1]}</em>.<br>➔ Final Luck: <strong style="color:white;">${wiz.attr.SORTE}</strong>`
+        ));
+    } else {
+        if (wiz.idade >= 20 && wiz.idade <= 39) { testesEdu = 1; }
+        else if (wiz.idade >= 40 && wiz.idade <= 49) { testesEdu = 2; apaPen = 5; wiz.reqPen = 5; }
+        else if (wiz.idade >= 50 && wiz.idade <= 59) { testesEdu = 3; apaPen = 10; wiz.reqPen = 10; }
+        else if (wiz.idade >= 60 && wiz.idade <= 69) { testesEdu = 4; apaPen = 15; wiz.reqPen = 20; }
+        else if (wiz.idade >= 70 && wiz.idade <= 79) { testesEdu = 4; apaPen = 20; wiz.reqPen = 40; }
+        else if (wiz.idade >= 80) { testesEdu = 4; apaPen = 25; wiz.reqPen = 80; }
+
+        wiz.attr.APA = Math.max(1, wiz.attr.APA - apaPen);
+        if (apaPen > 0) log.push(t(`<strong>Idade ${wiz.idade}:</strong> APA reduzida em ${apaPen}.`, `<strong>Age ${wiz.idade}:</strong> APP reduced by ${apaPen}.`));
+
+        for (let i = 0; i < testesEdu; i++) {
+            // Teste de EDU detalhado usando a R(s)
+            let rTeste = R("1d100");
+            let roll = rTeste[0];
+            
+            if (roll > wiz.attr.EDU && wiz.attr.EDU < 99) {
+                let rGain = R("1d10");
+                let gain = rGain[0];
+                wiz.attr.EDU = Math.min(99, wiz.attr.EDU + gain);
+                log.push(t(
+                    `<strong>Melhoria de EDU #${i+1}:</strong> <em>${rTeste[1]}</em><br><span style="color:#28a745;">Sucesso (${roll} > ${wiz.attr.EDU - gain})!</span> Ganho: <em>${rGain[1]}</em>`, 
+                    `<strong>EDU Check #${i+1}:</strong> <em>${rTeste[1]}</em><br><span style="color:#28a745;">Success (${roll} > ${wiz.attr.EDU - gain})!</span> Gain: <em>${rGain[1]}</em>`
+                ));
+            } else {
+                log.push(t(
+                    `<strong>Melhoria de EDU #${i+1}:</strong> <em>${rTeste[1]}</em><br><span style="color:#dc3545;">Falhou (${roll} <= ${wiz.attr.EDU}).</span>`, 
+                    `<strong>EDU Check #${i+1}:</strong> <em>${rTeste[1]}</em><br><span style="color:#dc3545;">Failed (${roll} <= ${wiz.attr.EDU}).</span>`
+                ));
+            }
+        }
+    }
+
+    html += `<div style="font-size:13px; color:#a1eae9; margin-bottom:10px;">${log.join('<br><br>')}</div>`;
+
+    if (wiz.reqPen > 0) {
+        html += `
+        <div style="background:#788c94; padding:10px; border-radius:8px; margin-bottom:15px; color:#20333c;">
+            <label><strong>${t(`Distribua exatamente -${wiz.reqPen} pontos:`, `Distribute exactly -${wiz.reqPen} points:`)}</strong></label>
+            <div style="display:flex; gap:10px;">
+                <div style="flex:1"><label>FOR (-)</label><input type="number" id="pen_FOR" value="0" min="0" max="${wiz.attr.FOR-1}" class="form-control pen-input" oninput="calcPen()"></div>
+                <div style="flex:1"><label>CON (-)</label><input type="number" id="pen_CON" value="0" min="0" max="${wiz.attr.CON-1}" class="form-control pen-input" oninput="calcPen()"></div>
+                <div style="flex:1"><label>DES (-)</label><input type="number" id="pen_DES" value="0" min="0" max="${wiz.attr.DES-1}" class="form-control pen-input" oninput="calcPen()"></div>
+            </div>
+            <div id="penRestantes" style="font-weight:bold; margin-top:5px; color:#8a2be2;">${t(`Faltam distribuir: ${wiz.reqPen}`, `Remaining to distribute: ${wiz.reqPen}`)}</div>
+        </div>`;
+    }
+
+    html += `
+        <div style="display:flex; gap:10px;">
+            <div style="flex:1"><label>${t(`EDU Final (Editável) (OG: ${wiz.baseAttr.EDU})`, `Final EDU (Editable) (OG: ${wiz.baseAttr.EDU})`)}</label><input type="number" id="edit_EDU" value="${wiz.attr.EDU}" class="form-control"></div>
+            <div style="flex:1"><label>${t(`Sorte Final (Editável) (OG: ${wiz.baseAttr.SORTE})`, `Final Luck (Editable) (OG: ${wiz.baseAttr.SORTE})`)}</label><input type="number" id="edit_SORTE" value="${wiz.attr.SORTE}" class="form-control"></div>
+        </div>
+    `;
+    document.getElementById('idadePreviewBox').innerHTML = html;
+}
+
+function calcPen() {
+    let pFor = parseInt(document.getElementById('pen_FOR').value) || 0;
+    let pCon = parseInt(document.getElementById('pen_CON').value) || 0;
+    let pDes = parseInt(document.getElementById('pen_DES').value) || 0;
+    document.getElementById('penRestantes').innerText = t(`Faltam distribuir: ${wiz.reqPen - (pFor+pCon+pDes)}`, `Remaining to distribute: ${wiz.reqPen - (pFor+pCon+pDes)}`);
+}
+
+function confirmarIdade() {
+    if (wiz.reqPen > 0) {
+        let pFor = parseInt(document.getElementById('pen_FOR').value) || 0;
+        let pCon = parseInt(document.getElementById('pen_CON').value) || 0;
+        let pDes = parseInt(document.getElementById('pen_DES').value) || 0;
+        if (pFor + pCon + pDes !== wiz.reqPen) {
+            return alert(t(`A soma das deduções deve ser exatamente ${wiz.reqPen}.`, `The sum of deductions must be exactly ${wiz.reqPen}.`));
+        }
+        wiz.attr.FOR -= pFor; wiz.attr.CON -= pCon; wiz.attr.DES -= pDes;
+    }
+    wiz.attr.EDU = parseInt(document.getElementById('edit_EDU').value) || wiz.attr.EDU;
+    wiz.attr.SORTE = parseInt(document.getElementById('edit_SORTE').value) || wiz.attr.SORTE;
+    step3Ocupacao();
+}
+
+// ============================================================================
+// PASSO 3: OCUPAÇÃO
+// ============================================================================
+function step3Ocupacao() {
+    let opts = `<option value="">${t('Selecione uma Ocupação...', 'Select an Occupation...')}</option>`;
+    Object.keys(OCCUPATIONS).forEach(k => {
+        opts += `<option value="${k}" ${wiz.ocupKey === k ? 'selected' : ''}>${isPtLang() ? OCCUPATIONS[k].pt : OCCUPATIONS[k].en}</option>`;
+    });
+
+    document.getElementById('wizardBody').innerHTML = `
+        <h4 style="color: #a1eae9;">${t('Passo 3: Ocupação', 'Step 3: Occupation')}</h4>
+        <select class="form-control" id="wizOcup" onchange="renderizarDetalhesOcupacao()">${opts}</select>
+        <div id="occDetailsDiv" style="margin-top: 15px;"></div>
+    `;
+    document.getElementById('wizardFooter').innerHTML = `
+        <button class="btn btn-secondary" onclick="step2Idade()">${t('Voltar', 'Back')}</button>
+        <button class="btn btn-warning" onclick="finalizarWizard()">${t('Pular para Ficha', 'Skip to Sheet')}</button>
+        <button class="btn btn-success" onclick="confirmarOcupacao()">${t('Próximo', 'Next')}</button>
+    `;
+    if (wiz.ocupKey) renderizarDetalhesOcupacao();
+}
+
+function renderizarDetalhesOcupacao() {
+    const key = document.getElementById('wizOcup').value;
+    const cont = document.getElementById('occDetailsDiv');
+    if (!key) { cont.innerHTML = ''; return; }
+
+    const occ = OCCUPATIONS[key];
+    wiz.customSkillLabels = occ.customLabels ? Object.assign({}, occ.customLabels) : {};
+
+    let html = `
+        <div class="innerWin" style="color: #20333c; text-align: left;">
+            <p><strong>${t('Descrição:', 'Desc:')}</strong> ${occ.desc}</p>
+            <p><strong>${t('Nível de Crédito:', 'Credit Rating:')}</strong> ${occ.creditBase} (${wiz.attr[occ.creditBase]}) | <strong>${t('Pontos Ocupação:', 'Occ. Points:')}</strong> EDU x ${occ.eduMult} = ${wiz.attr.EDU * occ.eduMult}</p>
+            <p><strong>${t('Perícias Fixas:', 'Fixed Skills:')}</strong> ${occ.fixed.map(id => getSkillName(id)).join(', ')}</p>
+        </div>
+    `;
+
+    if (occ.choices && occ.choices.count > 0) {
+        html += `<div style="background:#788c94; padding:10px; border-radius:8px; margin-top:10px; color:#20333c;">
+            <strong>${t(`Escolha ${occ.choices.count} especialidade(s):`, `Choose ${occ.choices.count} specialty(s):`)}</strong>`;
+        for (let i = 0; i < occ.choices.count; i++) {
+            html += `<select class="form-control mt-1 occ-choice-sel" id="occChoice_${i}" onchange="atualizarChoicesOcupacao('${key}')"></select>`;
+        }
+        html += `</div>`;
+    }
+    cont.innerHTML = html;
+    if (occ.choices && occ.choices.count > 0) atualizarChoicesOcupacao(key);
+}
+
+function atualizarChoicesOcupacao(key) {
+    const occ = OCCUPATIONS[key];
+    const selects = Array.from(document.querySelectorAll('.occ-choice-sel'));
+    const chosen = selects.map(s => s.value);
+
+    selects.forEach((sel, idx) => {
+        const myVal = chosen[idx];
+        let opts = `<option value="">${t('Selecione...', 'Select...')}</option>`;
+        occ.choices.from.forEach(skId => {
+            const strId = String(skId);
+            if (!occ.fixed.includes(skId) && (!chosen.includes(strId) || strId === myVal)) {
+                opts += `<option value="${strId}" ${strId === myVal ? 'selected' : ''}>${getSkillName(skId)}</option>`;
+            }
+        });
+        sel.innerHTML = opts;
+    });
+}
+
+function confirmarOcupacao() {
+    const key = document.getElementById('wizOcup').value;
+    if (!key) return alert(t("Selecione uma ocupação!", "Select an occupation!"));
+
+    const occ = OCCUPATIONS[key];
+    let chosenIds = [];
+    if (occ.choices && occ.choices.count > 0) {
+        for (let i = 0; i < occ.choices.count; i++) {
+            let v = parseInt(document.getElementById('occChoice_' + i).value, 10);
+            if (isNaN(v)) return alert(t("Selecione todas as especialidades!", "Select all specialties!"));
+            chosenIds.push(v);
+        }
+    }
+
+    wiz.ocupKey = key;
+    wiz.occSkillsFinal = [...new Set([...occ.fixed, ...chosenIds])].filter(id => !SKILL_CATALOG[id].locked);
+    wiz.ptsOcupacaoTotal = wiz.attr.EDU * occ.eduMult;
+    wiz.ptsInteresseTotal = wiz.attr.INT * 2;
+    wiz.gastosOcc = {}; wiz.gastosInt = {}; wiz.skillBonuses = {};
+
+    const addB = (id, val) => { wiz.skillBonuses[id] = (wiz.skillBonuses[id] || 0) + val; };
+    if (occ.special === "actor") { addB(10, wiz.attr.APA*2); addB(16, wiz.attr.APA*2); addB(41, wiz.attr.APA*2); addB(5, wiz.attr.APA*2); addB(26, wiz.attr.DES*2); }
+    else if (occ.special === "artist") { let bM = Math.max(wiz.attr.APA, wiz.attr.INT, wiz.attr.DES)*2; [5,56,10,41].forEach(i=>addB(i,bM)); }
+    else if (occ.special === "athlete") { let bS = wiz.attr.FOR*2; [17,9,26,53,54].forEach(i=>addB(i,bS)); }
+    else if (occ.special === "dilettante") { let bSo = Math.max(wiz.attr.APA,wiz.attr.INT)*2; [10,16].forEach(i=>addB(i,bSo)); let bSp = Math.max(wiz.attr.INT,wiz.attr.DES)*2; chosenIds.slice(0,3).forEach(i=>addB(i,bSp)); }
+    else if (occ.special === "soldier") { wiz.occSkillsFinal.slice(0,5).forEach(i=>addB(i, wiz.attr.DES*2)); }
+    else if (occ.special === "tradesman") { wiz.occSkillsFinal.slice(0,5).forEach(i=>addB(i, Math.max(wiz.attr.DES,wiz.attr.INT)*2)); }
+
+    step4PericiasOcupacionais();
+}
+
+function getSkillStartingValue(id) {
+    let b = SKILL_CATALOG[id].base;
+    if (id === 13) b = Math.floor(wiz.attr.DES / 2);
+    if (id === 27) b = wiz.attr.EDU;
+    if (id === 10 && wiz.ocupKey) b = wiz.attr[OCCUPATIONS[wiz.ocupKey].creditBase] || 0;
+    return Math.min(99, b + (wiz.skillBonuses[id] || 0));
+}
+
+// ============================================================================
+// PASSO 4 e 5: DISTRIBUIÇÃO DE PERÍCIAS
+// ============================================================================
+function renderizarPericiasUI(tipo) {
+    const isOcc = tipo === 'occ';
+    const disp = (isOcc ? wiz.ptsOcupacaoTotal : wiz.ptsInteresseTotal) - Object.values(isOcc ? wiz.gastosOcc : wiz.gastosInt).reduce((a,b)=>a+b, 0);
+    const listaIds = isOcc ? wiz.occSkillsFinal : Object.keys(SKILL_CATALOG).map(Number).filter(id => !SKILL_CATALOG[id].locked);
+    
+    let html = `
+        <h4 style="color: #a1eae9;">${isOcc ? t('Passo 4: Pontos Ocupacionais', 'Step 4: Occupational Points') : t('Passo 5: Interesses Pessoais', 'Step 5: Personal Interest')}</h4>
+        <div style="background:#20333c; border:1px solid #a1eae9; padding:8px; border-radius:8px; margin-bottom:10px; font-weight:bold; color:#a1eae9;">
+            ${t('Pontos Restantes:', 'Points Remaining:')} <span style="font-size:18px;">${disp}</span> / ${isOcc ? wiz.ptsOcupacaoTotal : wiz.ptsInteresseTotal}
+        </div>
+        <div style="max-height: 280px; overflow-y: auto; padding-right: 5px;">
+    `;
+
+    listaIds.forEach(id => {
+        let ini = getSkillStartingValue(id) + (isOcc ? 0 : (wiz.gastosOcc[id]||0));
+        let g = (isOcc ? wiz.gastosOcc[id] : wiz.gastosInt[id]) || 0;
+        
+        html += `
+        <div class="wiz-skill-row">
+            <span style="flex:2;">${getSkillName(id)} <small>(Base ${ini}%)</small></span>
+            <div style="display:flex; align-items:center; gap:5px;">
+                <button class="btn btn-sm btn-danger" onclick="modificarPericia(${id}, '${tipo}', -5)">-5</button>
+                <button class="btn btn-sm btn-danger" onclick="modificarPericia(${id}, '${tipo}', -1)">-1</button>
+                <span style="width:40px; text-align:center;">+${g}</span>
+                <button class="btn btn-sm btn-success" onclick="modificarPericia(${id}, '${tipo}', 1)">+1</button>
+                <button class="btn btn-sm btn-success" onclick="modificarPericia(${id}, '${tipo}', 5)">+5</button>
+            </div>
+            <span style="width:65px; text-align:right;">= <strong>${ini+g}%</strong></span>
+        </div>`;
+    });
+    
+    document.getElementById('wizardBody').innerHTML = html + `</div>`;
+    document.getElementById('wizardFooter').innerHTML = `
+        <button class="btn btn-secondary" onclick="${isOcc ? 'step3Ocupacao()' : 'step4PericiasOcupacionais()'}">${t('Voltar', 'Back')}</button>
+        <button class="btn btn-success" onclick="${isOcc ? 'step5PericiasInteresse()' : 'finalizarWizard()'}">${isOcc ? t('Próximo', 'Next') : t('Concluir Ficha', 'Finish Sheet')}</button>
+    `;
+}
+
+function step4PericiasOcupacionais() { renderizarPericiasUI('occ'); }
+function step5PericiasInteresse() { renderizarPericiasUI('int'); }
+
+function modificarPericia(id, tipo, delta) {
+    if (SKILL_CATALOG[id].locked) return;
+    const isOcc = (tipo === 'occ');
+    const gm = isOcc ? wiz.gastosOcc : wiz.gastosInt;
+    const maxDisp = (isOcc ? wiz.ptsOcupacaoTotal : wiz.ptsInteresseTotal) - Object.values(gm).reduce((a,b)=>a+b, 0);
+    const curr = gm[id] || 0;
+    const totalBase = getSkillStartingValue(id) + (wiz.gastosOcc[id]||0) + (wiz.gastosInt[id]||0);
+
+    if (delta > 0) {
+        let maxAdd = Math.min(delta, maxDisp, 99 - totalBase);
+        if (maxAdd > 0) gm[id] = curr + maxAdd;
+    } else {
+        let maxSub = Math.min(Math.abs(delta), curr);
+        if (maxSub > 0) gm[id] = curr - maxSub;
+    }
+    renderizarPericiasUI(tipo);
+}
+
+// ============================================================================
+// PASSO 6: APLICAR TUDO NO HTML
+// ============================================================================
+function finalizarWizard() {
+    const setInp = (id, val) => { const el = document.getElementById(id); if (el) { el.value = val; el.setAttribute('value', val); } };
+
+    setInput('att1', wiz.attr.FOR); setInput('att2', wiz.attr.CON); setInput('att3', wiz.attr.TAM); setInput('att4', wiz.attr.DES);
+    setInput('att5', wiz.attr.APA); setInput('att6', wiz.attr.EDU); setInput('att7', wiz.attr.INT); setInput('att8', wiz.attr.POD);
+    setInput('char5', wiz.idade);
+    
+    if (wiz.ocupKey) {
+        const occ = OCCUPATIONS[wiz.ocupKey];
+        setInput('char3', isPtLang() ? occ.pt.split(' (')[0] : occ.en);
+    }
+
+    const pv = Math.floor((wiz.attr.CON + wiz.attr.TAM) / 10);
+    const pm = Math.floor(wiz.attr.POD / 5);
+    setInput('cur1', pv); setInput('max1', pv);
+    setInput('cur2', wiz.attr.POD); setInput('max2', 99);
+    setInput('cur3', pm); setInput('max3', pm);
+    setInput('cur4', wiz.attr.SORTE);
+
+    Object.keys(SKILL_CATALOG).map(Number).forEach(id => {
+        let f = getSkillStartingValue(id) + (wiz.gastosOcc[id] || 0) + (wiz.gastosInt[id] || 0);
+        if (SKILL_CATALOG[id].locked) f = SKILL_CATALOG[id].base;
+        setInput('sk' + id, Math.min(99, f));
+
+        if (wiz.customSkillLabels && wiz.customSkillLabels[id]) {
+            const c = document.querySelector(`div[name="sk${id}"]`);
+            if (c) {
+                const n = c.querySelector('input[type="text"]');
+                if (n) { n.value = wiz.customSkillLabels[id]; n.setAttribute('value', wiz.customSkillLabels[id]); }
+            }
+        }
+    });
+
+    fecharWizard();
+}
+
+function setInput(id, val) {
+    const el = document.getElementById(id);
+    if (el) { el.value = val; el.setAttribute('value', val); }
+}
+function createSkills(l) {
+    var csks = [];
+    const isPt = (l === 'pt-br');
+    
+    // Configura o cabeçalho e a barra de rolagem customizada
+    document.getElementById('skills').innerHTML = '<h2 id="sknam">' + (isPt ? 'Perícias' : 'Skills') + '</h2><div style="clear: both;"></div><div style="clear: both;" class="centralized container" id="customDDiv"><input style="display: inline-block;" class="form-control centralized diceC" type="text" name="custom" id="customd" placeholder="' + (isPt ? 'Dados (Ex: 1d4+1d8+5)' : 'Dice (E.g. 1d4+1d6)') + '"><button class="btn btn-primary" onclick="RollCustom()">Roll</button></div>';
+    document.getElementById('skills').hidden = false;
+
+    // Prepara as 4 colunas
+    var in1 = document.createElement('div'); in1.className = 'innerWin container sk';
+    var in2 = document.createElement('div'); in2.className = 'innerWin container sk';
+    var in3 = document.createElement('div'); in3.className = 'innerWin container sk';
+    var in4 = document.createElement('div'); in4.className = 'innerWin container sk';
+    
+    const customDDiv = document.getElementById('customDDiv');
+    document.getElementById('skills').insertBefore(in1, customDDiv);
+    document.getElementById('skills').insertBefore(in2, customDDiv);
+    document.getElementById('skills').insertBefore(in3, customDDiv);
+    document.getElementById('skills').insertBefore(in4, customDDiv);
+
+    // 1. Extrai as perícias do SKILL_CATALOG
+    let skillsArray = Object.keys(SKILL_CATALOG).map(id => {
+        return {
+            id: parseInt(id),
+            name: isPt ? SKILL_CATALOG[id].pt : SKILL_CATALOG[id].en,
+            base: SKILL_CATALOG[id].base,
+            custom: SKILL_CATALOG[id].custom || false
+        };
+    });
+
+    // 2. Ordena alfabeticamente respeitando o idioma e a acentuação
+    skillsArray.sort((a, b) => a.name.localeCompare(b.name, isPt ? 'pt-BR' : 'en-US'));
+
+    // 3. Monta o HTML e distribui nas 4 colunas
+    for (var i = 0; i < skillsArray.length; i++) {
+        var sk = skillsArray[i];
+        
+        var div1 = document.createElement('div');
+        div1.setAttribute('name', "sk" + sk.id);
+        div1.className = 'container ininnerWin skill';
+        
+        var div2 = document.createElement('div');
+        div2.style = 'clear: both;';
+        
+        var div3 = document.createElement('div');
+        div3.style = "width: 45%;";
+        
+        if (sk.custom) {
+            var inp = document.createElement('input');
+            inp.setAttribute('onchange', 'cvalue(this)');
+            inp.className = 'form-control inp';
+            inp.style = 'float: left; margin-right: 10px;';
+            inp.placeholder = '(' + sk.name + ')';
+            csks.push("+1");
+            inp.id = "csk" + csks.length;
+            div3.appendChild(inp);
+        } else {
+            var h5 = document.createElement('h5');
+            h5.style = 'float: left; margin-right: 10px;';
+            h5.innerHTML = sk.name;
+            div3.appendChild(h5);
+        }
+        
+        var div4 = document.createElement('div');
+        var btn = document.createElement('button');
+        btn.style = 'float: right; margin-left: 5px;';
+        btn.className = 'btn btn-primary';
+        btn.setAttribute('onclick', 'Roll(this)');
+        btn.innerHTML = 'Roll';
+        
+        var inp2 = document.createElement('input');
+        inp2.setAttribute('onchange', 'cvalue(this)');
+        inp2.type = 'number';
+        inp2.name = 'sk' + sk.id;
+        inp2.id = 'sk' + sk.id;
+        inp2.className = 'form-control inp';
+        inp2.style = 'float: right; width: 10%;';
+        inp2.value = sk.base;
+        
+        var div5 = document.createElement('div');
+        div5.style = 'clear: both;';
+        
+        div4.appendChild(btn);
+        div4.appendChild(inp2);
+        div1.appendChild(div2);
+        div1.appendChild(div3);
+        div1.appendChild(div4);
+        div1.appendChild(div5);
+        
+        // Distribui as 60 perícias em grupos de 15 por coluna
+        if (i < 15) {
+            in1.appendChild(div1);
+        } else if (i < 30) {
+            in2.appendChild(div1);
+        } else if (i < 45) {
+            in3.appendChild(div1);
+        } else {
+            in4.appendChild(div1);
+        }
+    }
+}
+createSkills(document.getElementById('lsel').value)

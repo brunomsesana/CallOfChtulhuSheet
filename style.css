@@ -331,4 +331,37 @@ body{
         clear: both;
     }
 }
+/* Classes extras para o Wizard */
+.wiz-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    margin-bottom: 15px;
+}
+.wiz-box {
+    background-color: #788c94;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+}
+.wiz-box label {
+    font-weight: bold;
+    color: #20333c;
+    display: block;
+}
+.wiz-skill-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #788c94;
+    padding: 5px 15px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    color: #20333c;
+    font-weight: bold;
+}
+.wiz-skill-row input {
+    width: 60px;
+    text-align: center;
+}
 /* #endregion */

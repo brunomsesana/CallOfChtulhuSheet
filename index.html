@@ -12,15 +12,26 @@
     <div class="container shadow centralized pad20 window">
         <h1 id="tlt">Call of Cthulhu Automatic Sheet</h1>
         <p id="dis">Disclaimer: this is a fanmade website to make the sheet easier to use</p>
-        <a href="/login">Logout</a>
     </div>
     <div class="empty">
 
     </div>
     <button id="saveBtn" class="btn btn-primary" style="position: fixed; right: 10px; top: 10px;" onclick="save()">Save</button>
     <button id="loadBtn" class="btn btn-primary" style="position: fixed; right: 80px; top: 10px;" onclick="document.getElementById('loadsel').click()">Load</button>
-    <button id="delBtn" class="btn btn-primary" style="position: fixed; right: 150px; top: 10px;" onclick="del()">Delete</button>
-    <button id="pdfBtn" class="btn btn-primary" style="position: fixed; right: 235px; top: 10px;" onclick="exportarParaPDF()">Export PDF</button>
+    <button id="pdfBtn" class="btn btn-primary" style="position: fixed; right: 168px; top: 10px;" onclick="exportarParaPDF()">Export PDF</button>
+    
+    <!-- BOTÃO DO CRIADOR (Coloque junto aos botões do topo) -->
+    <button id="wizardBtn" class="btn btn-warning" style="position: fixed; left: 10px; top: 10px; z-index: 1000;" onclick="iniciarWizard()">Criar Investigador</button>
+
+    <!-- MENU WIZARD -->
+    <div id="wizardModal" class="panel container shadow" style="display: none; z-index: 2000;">
+        <div class="innerPanel container" style="overflow-y: auto; padding: 20px;">
+            <h2 id="wizardTitle" class="wtext" style="text-align: center; margin-top: 10px;">Criação de Personagem</h2>
+            <hr style="background-color: #a1eae9; height: 2px;">
+            <div id="wizardBody" class="wtext" style="font-size: 15px; margin-bottom: 20px; text-align: left;"></div>
+            <div id="wizardFooter" style="display: flex; justify-content: space-between; margin-top: 20px; padding-bottom: 20px;"></div>
+        </div>
+    </div>
     <input type="file" id="loadsel" accept=".sheet" class="form-control" style="display: none;" onchange="load(this)">
     <input type="button" value="Load" onclick="document.getElementById('loadsel').click();" style="position: fixed; right: 70px; top: 10px;" class="btn btn-primary" hidden/>
     <div class="container shadow pad20 centralized window">
@@ -39,7 +50,7 @@
         <h2 id="charName">Caracteristicas</h2>
         <div style="width: 20%;" class="container innerWin ih">
             <div id="characterimgdiv">
-                <p style="color: darkgray; font-size: smaller;">Recomenda-se o uso de imagens no tamanho ou proporção de 85x110 para exportação em pdf</p>
+                <p style="color: #5a5a5a; font-size: smaller;">Recomenda-se o uso de imagens no tamanho ou proporção de 85x110 para exportação em pdf</p>
                 <img id="characterimg" src="https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/fa3a7d93635679.5e699fbf9de8a.jpg" alt="" style="width: 90%;">
             </div>
             <input type="file" id="characterimgsel" accept="image/gif, image/jpeg, image/png" class="form-control" style="display: none;" onchange="img(this)">
@@ -157,14 +168,13 @@
         
         
     </div>
-    <!-- NOVA SEÇÃO: COMBATE E ARMAS -->
+    <!-- SEÇÃO: COMBATE E ARMAS (IDs corrigidos de 1 a 4) -->
     <div class="container shadow pad20 centralized window" id="combateSection">
         <h2 id="combateTitle">Combate e Armas</h2>
         <div style="clear: both;"></div>
-        <div class="pad20"></div>
-
-        <div class="innerWin container" style="margin-bottom: 15px; padding: 15px;">
-            <h5 id="lblArma1">Arma 1 (Ex: Pistola .32)</h5>
+        <div class="empty"></div>
+        <div class="innerWin container" style="margin-bottom: 15px; width: 98%">
+            <h5 id="lblArma1">Arma 1</h5>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <input type="text" class="form-control" id="armaNome1" placeholder="Nome da Arma" style="flex: 2;">
                 <input type="text" class="form-control" id="armaReg1" placeholder="Regular (%)" style="flex: 1;">
@@ -175,9 +185,8 @@
                 <input type="text" class="form-control" id="armaDef1" placeholder="Defeito" style="flex: 1;">
             </div>
         </div>
-
-        <div class="innerWin container" style="margin-bottom: 15px; padding: 15px;">
-            <h5 id="lblArma2">Arma 2 (Ex: Espingarda / Fuzil)</h5>
+        <div class="innerWin container" style="margin-bottom: 15px; width: 98%">
+            <h5 id="lblArma2">Arma 2</h5>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <input type="text" class="form-control" id="armaNome2" placeholder="Nome da Arma" style="flex: 2;">
                 <input type="text" class="form-control" id="armaReg2" placeholder="Regular (%)" style="flex: 1;">
@@ -186,6 +195,30 @@
                 <input type="text" class="form-control" id="armaAtaq2" placeholder="Ataques" style="flex: 1;">
                 <input type="text" class="form-control" id="armaMun2" placeholder="Munição" style="flex: 1;">
                 <input type="text" class="form-control" id="armaDef2" placeholder="Defeito" style="flex: 1;">
+            </div>
+        </div>
+        <div class="innerWin container" style="margin-bottom: 15px; width: 98%">
+            <h5 id="lblArma3">Arma 3</h5>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <input type="text" class="form-control" id="armaNome3" placeholder="Nome da Arma" style="flex: 2;">
+                <input type="text" class="form-control" id="armaReg3" placeholder="Regular (%)" style="flex: 1;">
+                <input type="text" class="form-control" id="armaDano3" placeholder="Dano" style="flex: 1;">
+                <input type="text" class="form-control" id="armaAlc3" placeholder="Alcance" style="flex: 1;">
+                <input type="text" class="form-control" id="armaAtaq3" placeholder="Ataques" style="flex: 1;">
+                <input type="text" class="form-control" id="armaMun3" placeholder="Munição" style="flex: 1;">
+                <input type="text" class="form-control" id="armaDef3" placeholder="Defeito" style="flex: 1;">
+            </div>
+        </div>
+        <div class="innerWin container" style="margin-bottom: 15px; width: 98%">
+            <h5 id="lblArma4">Arma 4</h5>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <input type="text" class="form-control" id="armaNome4" placeholder="Nome da Arma" style="flex: 2;">
+                <input type="text" class="form-control" id="armaReg4" placeholder="Regular (%)" style="flex: 1;">
+                <input type="text" class="form-control" id="armaDano4" placeholder="Dano" style="flex: 1;">
+                <input type="text" class="form-control" id="armaAlc4" placeholder="Alcance" style="flex: 1;">
+                <input type="text" class="form-control" id="armaAtaq4" placeholder="Ataques" style="flex: 1;">
+                <input type="text" class="form-control" id="armaMun4" placeholder="Munição" style="flex: 1;">
+                <input type="text" class="form-control" id="armaDef4" placeholder="Defeito" style="flex: 1;">
             </div>
         </div>
     </div>
