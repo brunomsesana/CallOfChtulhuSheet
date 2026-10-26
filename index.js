@@ -670,35 +670,252 @@ const SKILL_CATALOG = {
 };
 
 const OCCUPATIONS = {
-    "actor": { pt: "Ator / Artista (Actor)", en: "Actor", desc: "Film/stage actors, musicians. Half EDU bonus, APP & DEX bonuses.", creditBase: "APA", eduMult: 2, fixed: [5, 10, 12, 16, 41, 44], choices: { count: 2, from: [17, 26, 20, 28, 19, 45] }, special: "actor" },
-    "alienist": { pt: "Alienista (Alienist)", en: "Alienist", desc: "Psychiatrist / Mental illness scholar.", creditBase: "EDU", eduMult: 4, fixed: [1, 47, 32, 36, 41, 48, 43, 44], choices: { count: 0, from: [] }, customLabels: { 47: "Forensics", 48: "Pharmacy" } },
-    "antiquarian": { pt: "Antiquário (Antiquarian)", en: "Antiquarian", desc: "Collector of rare artifacts.", creditBase: "EDU", eduMult: 4, fixed: [5, 56, 24, 31, 32, 28], choices: { count: 2, from: [2, 4, 16, 50] }, customLabels: { 56: "Bargain" } },
-    "artist": { pt: "Artista (Artist)", en: "Artist", desc: "Half EDU bonus, plus 2x (APP, INT, or DEX) to specific skills.", creditBase: "APA", eduMult: 2, fixed: [5, 6, 56, 10, 24, 32, 41, 44], choices: { count: 0, from: [] }, customLabels: { 5: "Art", 6: "Craft", 56: "Bargain" }, special: "artist" },
-    "athlete": { pt: "Atleta / Capanga (Athlete/Thug)", en: "Athlete/Thug", desc: "Half EDU bonus, plus 2x STR to physical skills.", creditBase: "FOR", eduMult: 2, fixed: [9, 17, 18, 13, 26, 45, 53, 54], choices: { count: 0, from: [] }, customLabels: { 18: "Grapple" }, special: "athlete" },
-    "author": { pt: "Autor / Linguista (Author/Linguist)", en: "Author/Linguist", desc: "Writer or language expert.", creditBase: "INT", eduMult: 4, fixed: [5, 10, 24, 32, 28, 41, 44], choices: { count: 1, from: [2, 4, 47, 37] }, customLabels: { 5: "Literature", 47: "Forensics" } },
-    "aviator": { pt: "Aviador (Aviator)", en: "Aviator", desc: "Test pilots, barnstormers, military pilots.", creditBase: "DES", eduMult: 4, fixed: [48, 15, 35, 38, 42, 50], choices: { count: 2, from: [56, 22, 57] }, customLabels: { 48: "Astronomy", 42: "Pilot Aircraft", 56: "Bargain", 22: "Crewed Weapon", 57: "Pilot Parachute" } },
-    "clergy": { pt: "Clérigo / Missionário (Clergy)", en: "Clergy", desc: "Pious individuals and religious scholars.", creditBase: "APA", eduMult: 4, fixed: [1, 56, 28, 41, 44], choices: { count: 3, from: [2, 5, 10, 24, 32, 36, 43] }, customLabels: { 56: "Bargain" } },
-    "executive": { pt: "Executivo Corporativo (Executive)", en: "Executive", desc: "Leader in business or manufacturing.", creditBase: "INT", eduMult: 4, fixed: [1, 56, 10, 16, 28, 44], choices: { count: 2, from: [5, 47, 15, 48, 31, 35, 41, 57] }, customLabels: { 56: "Bargain", 47: "Chemistry", 48: "Geology", 57: "Pharmacy" } },
-    "criminal": { pt: "Criminoso (Criminal)", en: "Criminal", desc: "Street-wise criminal.", creditBase: "INT", eduMult: 4, fixed: [16, 33, 44, 50], choices: { count: 4, from: [5, 17, 9, 14, 18, 56, 49, 12, 20, 51, 34, 19] }, customLabels: { 18: "Grapple", 56: "Bargain", 19: "Melee Weapon" } },
-    "detective": { pt: "Detetive (Detective)", en: "Detective", desc: "Private eye, bounty hunter, or cop.", creditBase: "INT", eduMult: 4, fixed: [17, 20, 33, 44, 51, 50], choices: { count: 2, from: [14, 18, 16, 32, 47, 5, 31, 55] }, customLabels: { 18: "Grapple", 47: "Forensics", 5: "Photography" } },
-    "dilettante": { pt: "Diletante / Socialite (Dilettante)", en: "Dilettante", desc: "Wealthy heir. Half EDU bonus, 2x (APP or INT) & 2x (INT or DEX) bonuses.", creditBase: "POD", eduMult: 2, fixed: [10], choices: { count: 7, from: [1, 2, 3, 4, 5, 8, 9, 12, 14, 16, 17, 20, 21, 24, 26, 28, 31, 32, 33, 37, 38, 41, 42, 44, 45, 50, 51, 53] }, special: "dilettante" },
-    "doctor": { pt: "Médico (Doctor of Medicine)", en: "Doctor", desc: "Medical professional.", creditBase: "EDU", eduMult: 4, fixed: [32, 36, 48, 23, 47], choices: { count: 3, from: [1, 46, 10, 41, 44] }, customLabels: { 47: "Forensics", 48: "Pharmacy", 46: "Biology" } },
-    "drifter": { pt: "Andarilho (Drifter)", en: "Drifter", desc: "Itinerant traveler.", creditBase: "POD", eduMult: 4, fixed: [56, 49, 16, 51, 33, 44, 57], choices: { count: 1, from: [5, 6, 35, 37, 50] }, customLabels: { 56: "Bargain", 57: "Hide" } },
-    "engineer": { pt: "Engenheiro (Engineer)", en: "Engineer", desc: "Designer and manufacturer.", creditBase: "INT", eduMult: 4, fixed: [47, 5, 10, 15, 48, 35, 40, 46], choices: { count: 0, from: [] }, customLabels: { 47: "Chemistry", 5: "Craft", 48: "Geology", 46: "Physics" } },
-    "farmer": { pt: "Fazendeiro (Farmer/Forester)", en: "Farmer", desc: "Rural farmer or forester.", creditBase: "CON", eduMult: 4, fixed: [1, 56, 5, 15, 35, 37], choices: { count: 2, from: [14, 21, 40, 42, 45, 55] }, customLabels: { 56: "Bargain", 5: "Craft", 42: "Pilot Boat" } },
-    "guide": { pt: "Guia / Caçador (Guide/Hunter)", en: "Guide", desc: "Professional guide or big game hunter.", creditBase: "CON", eduMult: 4, fixed: [5, 9, 37, 38, 33, 21, 50, 55], choices: { count: 0, from: [] }, customLabels: { 5: "Craft" } },
-    "journalist": { pt: "Jornalista (Journalist)", en: "Journalist", desc: "Reporter or columnist.", creditBase: "APA", eduMult: 4, fixed: [1, 16, 32, 33, 28, 5, 41, 44], choices: { count: 0, from: [] }, customLabels: { 5: "Photography" } },
-    "lawyer": { pt: "Advogado (Lawyer)", en: "Lawyer", desc: "Practitioner of the law.", creditBase: "APA", eduMult: 4, fixed: [56, 10, 16, 31, 32, 28, 41, 44], choices: { count: 0, from: [] }, customLabels: { 56: "Bargain" } },
-    "nurse": { pt: "Enfermeiro(a) (Nurse)", en: "Nurse", desc: "Medical assistant in care.", creditBase: "CON", eduMult: 4, fixed: [1, 18, 23, 33, 36, 41, 48, 44], choices: { count: 0, from: [] }, customLabels: { 18: "Grapple", 48: "Pharmacy" } },
-    "noble": { pt: "Nobre (Noble)", en: "Noble", desc: "Member of the aristocracy.", creditBase: "APA", eduMult: 4, fixed: [5, 10, 24, 31, 28, 45], choices: { count: 2, from: [1, 6, 21, 19] }, customLabels: { 5: "Art", 6: "Craft", 19: "Melee Weapon" } },
-    "parapsychologist": { pt: "Parapsicólogo (Parapsychologist)", en: "Parapsychologist", desc: "Researcher into mystical phenomena.", creditBase: "POD", eduMult: 4, fixed: [5, 2, 24, 28, 32, 6, 44], choices: { count: 0, from: [] }, customLabels: { 5: "Art", 6: "Photography" } },
-    "professor": { pt: "Professor / Acadêmico (Professor)", en: "Professor", desc: "University scholar.", creditBase: "INT", eduMult: 4, fixed: [10, 32, 28, 41], choices: { count: 4, from: [4, 2, 48, 46, 47, 37, 24, 5] }, customLabels: { 5: "Photography", 46: "Biology/Physics", 47: "Chemistry", 48: "Astronomy/Geology" } },
-    "rancher": { pt: "Rancheiro / Veterinário (Rancher)", en: "Rancher", desc: "Rancher or rural veterinarian.", creditBase: "CON", eduMult: 4, fixed: [56, 5, 10, 18, 36, 35, 37, 45, 57], choices: { count: 0, from: [] }, customLabels: { 56: "Bargain", 5: "Craft", 18: "Grapple", 57: "Rope" } },
-    "sailor": { pt: "Marinheiro (Sailor)", en: "Sailor", desc: "Sailor or boat captain.", creditBase: "INT", eduMult: 4, fixed: [48, 35, 37, 38, 42, 50, 53], choices: { count: 1, from: [1, 56, 9, 5, 22, 15] }, customLabels: { 48: "Astronomy", 42: "Pilot Boat", 56: "Bargain", 22: "Crewed Weapon" } },
-    "soldier": { pt: "Soldado (Soldier)", en: "Soldier", desc: "Professional soldier. Half EDU bonus, plus 2x DEX to 5 professional skills.", creditBase: "CON", eduMult: 2, fixed: [9, 17, 19, 20, 21], choices: { count: 3, from: [1, 22, 14, 23, 38, 35, 42, 51, 54, 45] }, customLabels: { 19: "Melee Weapon", 22: "Crewed Weapon", 42: "Pilot Boat" }, special: "soldier" },
-    "tradesman": { pt: "Comerciante / Artesão (Tradesman)", en: "Tradesman", desc: "Skilled laborer. Half EDU bonus, plus 2x (DEX or INT) to 5 professional skills.", creditBase: "INT", eduMult: 2, fixed: [56, 5, 14, 15, 35, 44], choices: { count: 2, from: [1, 9, 16, 34, 41] }, customLabels: { 56: "Bargain", 5: "Craft" }, special: "tradesman" },
-    "tribal": { pt: "Membro Tribal (Tribal Member)", en: "Tribal", desc: "Isolated culture native.", creditBase: "FOR", eduMult: 4, fixed: [9, 26, 33, 37, 53], choices: { count: 3, from: [22, 17, 5, 18, 19, 50, 54, 55] }, customLabels: { 22: "Archery", 5: "Craft", 18: "Grapple", 19: "Melee Weapon" } },
-    "custom": { pt: "Personalizado (Custom Occupation)", en: "Custom", desc: "Escolha 8 perícias (EDU x 4).", creditBase: "EDU", eduMult: 4, fixed: [], choices: { count: 8, from: Object.keys(SKILL_CATALOG).map(Number).filter(id => !SKILL_CATALOG[id].locked) } }
+    "actor": {
+        pt: "Ator / Artista de Entretenimento (Actor/Entertainer)", en: "Actor/Entertainer",
+        desc: "Atores de teatro/cinema, músicos, cantores e artistas de circo.",
+        creditMin: 9, creditMax: 90,
+        calcPoints: (a) => a.EDU * 2 + a.APA * 2,
+        formulaText: "EDU x 2 + APA x 2",
+        fixed: [5, 12, 44], choices: { count: 5, from: [8, 16, 41, 17, 26, 20, 28, 19, 45] }
+    },
+    "alienist": {
+        pt: "Alienista (Alienist)", en: "Alienist",
+        desc: "Médico especialista no estudo de doenças mentais e psiquiatria.",
+        creditMin: 10, creditMax: 60,
+        calcPoints: (a) => a.EDU * 4,
+        formulaText: "EDU x 4",
+        fixed: [31, 33, 36, 28, 43, 44, 46, 47], choices: { count: 0, from: [] },
+        customLabels: { 46: "Biologia", 47: "Farmácia" }
+    },
+    "antiquarian": {
+        pt: "Antiquário (Antiquarian)", en: "Antiquarian",
+        desc: "Colecionador e negociante de relíquias, livros raros e artefatos antigos.",
+        creditMin: 30, creditMax: 70,
+        calcPoints: (a) => a.EDU * 4,
+        formulaText: "EDU x 4",
+        fixed: [3, 5, 24, 32, 28, 50], choices: { count: 2, from: [8, 16, 25, 41, 2, 4] }
+    },
+    "artist": {
+        pt: "Artista (Artist)", en: "Artist",
+        desc: "Pintor, escultor ou fotógrafo profissional.",
+        creditMin: 9, creditMax: 50,
+        calcPoints: (a) => a.EDU * 2 + Math.max(a.DES, a.POD) * 2,
+        formulaText: "EDU x 2 + (DES ou POD) x 2",
+        fixed: [5, 24, 37, 28, 44, 50], choices: { count: 2, from: [8, 16, 25, 41, 6, 32] }
+    },
+    "athlete": {
+        pt: "Atleta / Capanga (Athlete/Thug)", en: "Athlete/Thug",
+        desc: "Atleta profissional ou guarda-costas contratado.",
+        creditMin: 9, creditMax: 70,
+        calcPoints: (a) => a.EDU * 2 + Math.max(a.DES, a.FOR) * 2,
+        formulaText: "EDU x 2 + (DES ou FOR) x 2",
+        fixed: [9, 26, 17, 45, 53, 54], choices: { count: 2, from: [8, 16, 25, 41, 13, 18] },
+        customLabels: { 18: "Agarrar (Grapple)" }
+    },
+    "author": {
+        pt: "Autor / Escritor (Author/Linguist)", en: "Author/Linguist",
+        desc: "Escritor de ficção, não-ficção ou tradutor acadêmico.",
+        creditMin: 9, creditMax: 30,
+        calcPoints: (a) => a.EDU * 4,
+        formulaText: "EDU x 4",
+        fixed: [5, 24, 32, 37, 28, 27, 44], choices: { count: 1, from: [2, 4, 41, 16] },
+        customLabels: { 5: "Literatura" }
+    },
+    "aviator": {
+        pt: "Aviador / Piloto (Aviator)", en: "Aviator",
+        desc: "Piloto de correio aéreo, acrobata, piloto de testes ou veterano.",
+        creditMin: 30, creditMax: 60,
+        calcPoints: (a) => a.EDU * 2 + a.DES * 2,
+        formulaText: "EDU x 2 + DES x 2",
+        fixed: [1, 15, 33, 35, 38, 42, 48], choices: { count: 1, from: [50, 52, 22] },
+        customLabels: { 42: "Aeronaves", 48: "Astronomia" }
+    },
+    "clergy": {
+        pt: "Clérigo / Missionário (Clergy/Missionary)", en: "Clergy/Missionary",
+        desc: "Membro do clero, padre, pastor ou missionário religioso.",
+        creditMin: 9, creditMax: 60,
+        calcPoints: (a) => a.EDU * 4,
+        formulaText: "EDU x 4",
+        fixed: [1, 24, 32, 33, 28, 44], choices: { count: 2, from: [8, 16, 25, 41, 2, 5, 36] }
+    },
+    "executive": {
+        pt: "Executivo Corporativo (Corporate Executive)", en: "Corporate Executive",
+        desc: "Líder empresarial, diretor ou industrial.",
+        creditMin: 40, creditMax: 90,
+        calcPoints: (a) => a.EDU * 4,
+        formulaText: "EDU x 4",
+        fixed: [1, 31, 28, 44], choices: { count: 4, from: [8, 16, 25, 41, 3, 15, 35, 47] }
+    },
+    "criminal": {
+        pt: "Criminoso (Criminal)", en: "Criminal",
+        desc: "Assaltante, vigarista, contrabandista ou ladrão profissional.",
+        creditMin: 5, creditMax: 65,
+        calcPoints: (a) => a.EDU * 2 + Math.max(a.DES, a.FOR) * 2,
+        formulaText: "EDU x 2 + (DES ou FOR) x 2",
+        fixed: [44, 50, 51], choices: { count: 5, from: [3, 12, 17, 20, 34, 35, 49, 8, 16, 25, 41, 9, 14] }
+    },
+    "detective": {
+        pt: "Detetive / Investigador (Detective)", en: "Detective",
+        desc: "Detetive de polícia ou investigador particular.",
+        creditMin: 20, creditMax: 50,
+        calcPoints: (a) => a.EDU * 2 + Math.max(a.DES, a.FOR) * 2,
+        formulaText: "EDU x 2 + (DES ou FOR) x 2",
+        fixed: [5, 12, 31, 32, 33, 44, 50], choices: { count: 1, from: [8, 16, 25, 41, 20, 17, 51, 55] },
+        customLabels: { 5: "Fotografia" }
+    },
+    "dilettante": {
+        pt: "Diletante / Socialite (Dilettante/Socialite)", en: "Dilettante/Socialite",
+        desc: "Herdeiro rico que vive de renda e cultiva hobbies variados.",
+        creditMin: 50, creditMax: 99,
+        calcPoints: (a) => a.EDU * 2 + a.APA * 2,
+        formulaText: "EDU x 2 + APA x 2",
+        fixed: [5, 20, 28, 45], choices: { count: 4, from: [8, 16, 25, 41, 2, 4, 14, 21, 24, 26, 32, 38, 42, 44, 50, 52, 53] }
+    },
+    "doctor": {
+        pt: "Médico (Doctor of Medicine)", en: "Doctor of Medicine",
+        desc: "Profissional formado em medicina clínica ou cirúrgica.",
+        creditMin: 30, creditMax: 80,
+        calcPoints: (a) => a.EDU * 4,
+        formulaText: "EDU x 4",
+        fixed: [23, 28, 36, 44, 46, 47], choices: { count: 2, from: [1, 32, 41, 43, 48] },
+        customLabels: { 28: "Latim", 46: "Biologia", 47: "Farmácia" }
+    },
+    "drifter": {
+        pt: "Andarilho (Drifter)", en: "Drifter",
+        desc: "Viajante errante que vive nas estradas e faz trabalhos temporários.",
+        creditMin: 0, creditMax: 5,
+        calcPoints: (a) => a.EDU * 2 + Math.max(a.APA, a.DES, a.FOR) * 2,
+        formulaText: "EDU x 2 + (APA, DES ou FOR) x 2",
+        fixed: [9, 26, 33, 38, 51], choices: { count: 3, from: [8, 16, 25, 41, 5, 35, 37, 49, 50, 52] }
+    },
+    "engineer": {
+        pt: "Engenheiro (Engineer)", en: "Engineer",
+        desc: "Especialista em projetar e construir estruturas e máquinas.",
+        creditMin: 30, creditMax: 60,
+        calcPoints: (a) => a.EDU * 4,
+        formulaText: "EDU x 4",
+        fixed: [5, 15, 32, 35, 40, 46, 47], choices: { count: 1, from: [48, 1, 14] },
+        customLabels: { 5: "Desenho Técnico", 46: "Engenharia", 47: "Física", 48: "Geologia/Química" }
+    },
+    "farmer": {
+        pt: "Fazendeiro / Guarda Florestal (Farmer/Forester)", en: "Farmer/Forester",
+        desc: "Trabalhador rural, agricultor ou silvicultor.",
+        creditMin: 9, creditMax: 30,
+        calcPoints: (a) => a.EDU * 2 + Math.max(a.DES, a.FOR) * 2,
+        formulaText: "EDU x 2 + (DES ou FOR) x 2",
+        fixed: [5, 14, 35, 37, 40, 55], choices: { count: 2, from: [8, 16, 25, 41, 1, 15, 21, 45] },
+        customLabels: { 5: "Agricultura" }
+    },
+    "guide": {
+        pt: "Guia / Caçador (Guide/Hunter)", en: "Guide/Hunter",
+        desc: "Caçador profissional, montanhista ou guia de expedições.",
+        creditMin: 20, creditMax: 50,
+        calcPoints: (a) => a.EDU * 2 + Math.max(a.DES, a.FOR) * 2,
+        formulaText: "EDU x 2 + (DES ou FOR) x 2",
+        fixed: [37, 38, 50, 52, 55], choices: { count: 3, from: [9, 21, 33, 51, 28, 23, 53] }
+    },
+    "journalist": {
+        pt: "Jornalista (Journalist)", en: "Journalist",
+        desc: "Repórter, colunista ou correspondente investigativo.",
+        creditMin: 9, creditMax: 30,
+        calcPoints: (a) => a.EDU * 4,
+        formulaText: "EDU x 4",
+        fixed: [5, 24, 32, 27, 44], choices: { count: 3, from: [8, 16, 25, 41, 33, 28, 50] },
+        customLabels: { 5: "Fotografia/Escrita" }
+    },
+    "lawyer": {
+        pt: "Advogado (Lawyer)", en: "Lawyer",
+        desc: "Defensor, promotor ou consultor jurídico.",
+        creditMin: 30, creditMax: 80,
+        calcPoints: (a) => a.EDU * 4,
+        formulaText: "EDU x 4",
+        fixed: [1, 31, 32, 44], choices: { count: 4, from: [8, 16, 25, 41, 24, 33, 50] }
+    },
+    "nurse": {
+        pt: "Enfermeiro(a) (Nurse)", en: "Nurse",
+        desc: "Profissional de assistência médica e hospitalar.",
+        creditMin: 9, creditMax: 30,
+        calcPoints: (a) => a.EDU * 4,
+        formulaText: "EDU x 4",
+        fixed: [23, 33, 36, 44, 46, 47, 50], choices: { count: 1, from: [8, 16, 25, 41] },
+        customLabels: { 46: "Biologia", 47: "Química/Farmácia" }
+    },
+    "noble": {
+        pt: "Nobre / Aristocrata (Noble)", en: "Noble",
+        desc: "Membro da aristocracia ou alta sociedade tradicional.",
+        creditMin: 40, creditMax: 90,
+        calcPoints: (a) => a.EDU * 2 + a.APA * 2,
+        formulaText: "EDU x 2 + APA x 2",
+        fixed: [5, 24, 31, 28, 45], choices: { count: 3, from: [8, 16, 25, 41, 1, 21, 19, 38] }
+    },
+    "parapsychologist": {
+        pt: "Parapsicólogo (Parapsychologist)", en: "Parapsychologist",
+        desc: "Pesquisador de fenômenos paranormais e psíquicos.",
+        creditMin: 9, creditMax: 30,
+        calcPoints: (a) => a.EDU * 4,
+        formulaText: "EDU x 4",
+        fixed: [2, 5, 24, 32, 28, 44], choices: { count: 2, from: [33, 50, 43, 46] },
+        customLabels: { 5: "Fotografia" }
+    },
+    "professor": {
+        pt: "Professor / Acadêmico (Professor/Scholar)", en: "Professor/Scholar",
+        desc: "Acadêmico universitário ou pesquisador doutor.",
+        creditMin: 20, creditMax: 70,
+        calcPoints: (a) => a.EDU * 4,
+        formulaText: "EDU x 4",
+        fixed: [32, 28, 27, 44], choices: { count: 4, from: [2, 4, 24, 31, 36, 37, 46, 47, 48] }
+    },
+    "rancher": {
+        pt: "Rancheiro / Veterinário (Rancher/Veterinarian)", en: "Rancher/Veterinarian",
+        desc: "Criador de gado, vaqueiro ou médico veterinário rural.",
+        creditMin: 9, creditMax: 40,
+        calcPoints: (a) => a.EDU * 2 + Math.max(a.DES, a.FOR) * 2,
+        formulaText: "EDU x 2 + (DES ou FOR) x 2",
+        fixed: [5, 14, 35, 36, 37, 45], choices: { count: 2, from: [21, 55, 18, 46] },
+        customLabels: { 36: "Veterinária" }
+    },
+    "sailor": {
+        pt: "Marinheiro (Sailor)", en: "Sailor",
+        desc: "Tripulante ou oficial da marinha mercante ou militar.",
+        creditMin: 9, creditMax: 40,
+        calcPoints: (a) => a.EDU * 2 + Math.max(a.DES, a.FOR) * 2,
+        formulaText: "EDU x 2 + (DES ou FOR) x 2",
+        fixed: [15, 17, 23, 35, 37, 38, 42, 53], choices: { count: 0, from: [] },
+        customLabels: { 42: "Barcos" }
+    },
+    "soldier": {
+        pt: "Soldado (Soldier)", en: "Soldier",
+        desc: "Militar profissional treinado em combate e disciplina.",
+        creditMin: 9, creditMax: 30,
+        calcPoints: (a) => a.EDU * 2 + Math.max(a.DES, a.FOR) * 2,
+        formulaText: "EDU x 2 + (DES ou FOR) x 2",
+        fixed: [9, 13, 17, 21, 51, 52], choices: { count: 2, from: [23, 35, 28, 20, 19, 54] }
+    },
+    "tradesman": {
+        pt: "Comerciante / Artesão (Tradesman)", en: "Tradesman",
+        desc: "Trabalhador qualificado ou dono de oficina/comércio.",
+        creditMin: 9, creditMax: 40,
+        calcPoints: (a) => a.EDU * 2 + a.DES * 2,
+        formulaText: "EDU x 2 + DES x 2",
+        fixed: [1, 5, 14, 15, 35], choices: { count: 3, from: [8, 16, 25, 41, 9, 34, 40, 44] }
+    },
+    "tribal": {
+        pt: "Membro Tribal (Tribal Member)", en: "Tribal Member",
+        desc: "Nativo criado em cultura tradicional isolada.",
+        creditMin: 0, creditMax: 15,
+        calcPoints: (a) => a.EDU * 2 + Math.max(a.DES, a.FOR) * 2,
+        formulaText: "EDU x 2 + (DES ou FOR) x 2",
+        fixed: [9, 17, 33, 37, 50, 52, 53, 54], choices: { count: 0, from: [] }
+    },
+    "custom": {
+        pt: "Personalizado (Custom Occupation)", en: "Custom Occupation",
+        desc: "Defina a margem de Nível de Crédito e escolha 8 perícias da ocupação.",
+        creditMin: 0, creditMax: 99,
+        calcPoints: (a) => a.EDU * 4,
+        formulaText: "EDU x 4",
+        fixed: [],
+        choices: { count: 8, from: Object.keys(SKILL_CATALOG).map(Number).filter(id => !SKILL_CATALOG[id].locked && id !== 10) }
+    }
 };
 
 let wiz = {};
@@ -1068,18 +1285,37 @@ function renderizarDetalhesOcupacao() {
 
     const occ = OCCUPATIONS[key];
     wiz.customSkillLabels = occ.customLabels ? Object.assign({}, occ.customLabels) : {};
+    const totalPts = occ.calcPoints(wiz.attr);
 
     let html = `
         <div class="innerWin" style="color: #20333c; text-align: left;">
-            <p><strong>${t('Descrição:', 'Desc:')}</strong> ${occ.desc}</p>
-            <p><strong>${t('Nível de Crédito:', 'Credit Rating:')}</strong> ${occ.creditBase} (${wiz.attr[occ.creditBase]}) | <strong>${t('Pontos Ocupação:', 'Occ. Points:')}</strong> EDU x ${occ.eduMult} = ${wiz.attr.EDU * occ.eduMult}</p>
-            <p><strong>${t('Perícias Fixas:', 'Fixed Skills:')}</strong> ${occ.fixed.map(id => getSkillName(id)).join(', ')}</p>
+            <p style="margin-bottom:6px;"><strong>${t('Descrição:', 'Desc:')}</strong> ${occ.desc}</p>
+            <p style="margin-bottom:6px;">
+                <strong>${t('Margem de Nível de Crédito:', 'Credit Rating Range:')}</strong> ${occ.creditMin}% – ${occ.creditMax}% | 
+                <strong>${t('Pontos Ocupacionais:', 'Occ. Points:')}</strong> ${occ.formulaText} = <strong>${totalPts}</strong>
+            </p>
+            ${occ.fixed.length > 0 ? `<p style="margin-bottom:0;"><strong>${t('Perícias Fixas:', 'Fixed Skills:')}</strong> ${occ.fixed.map(id => getSkillName(id)).join(', ')}, ${getSkillName(10)}</p>` : ''}
         </div>
     `;
 
+    // Se for Ocupação Personalizada, deixa o jogador escolher a margem de Nível de Crédito
+    if (key === 'custom') {
+        html += `
+        <div style="background:#788c94; padding:10px; border-radius:8px; margin-top:10px; color:#20333c; display:flex; gap:10px;">
+            <div style="flex:1">
+                <label><strong>${t('Nível de Crédito Mín (%):', 'Min Credit Rating (%):')}</strong></label>
+                <input type="number" id="customCrMin" class="form-control" value="9" min="0" max="99">
+            </div>
+            <div style="flex:1">
+                <label><strong>${t('Nível de Crédito Máx (%):', 'Max Credit Rating (%):')}</strong></label>
+                <input type="number" id="customCrMax" class="form-control" value="50" min="0" max="99">
+            </div>
+        </div>`;
+    }
+
     if (occ.choices && occ.choices.count > 0) {
         html += `<div style="background:#788c94; padding:10px; border-radius:8px; margin-top:10px; color:#20333c;">
-            <strong>${t(`Escolha ${occ.choices.count} especialidade(s):`, `Choose ${occ.choices.count} specialty(s):`)}</strong>`;
+            <strong>${t(`Escolha ${occ.choices.count} especialidade(s) da ocupação:`, `Choose ${occ.choices.count} occupational specialty(s):`)}</strong>`;
         for (let i = 0; i < occ.choices.count; i++) {
             html += `<select class="form-control mt-1 occ-choice-sel" id="occChoice_${i}" onchange="atualizarChoicesOcupacao('${key}')"></select>`;
         }
@@ -1099,7 +1335,7 @@ function atualizarChoicesOcupacao(key) {
         let opts = `<option value="">${t('Selecione...', 'Select...')}</option>`;
         occ.choices.from.forEach(skId => {
             const strId = String(skId);
-            if (!occ.fixed.includes(skId) && (!chosen.includes(strId) || strId === myVal)) {
+            if (!occ.fixed.includes(skId) && skId !== 10 && (!chosen.includes(strId) || strId === myVal)) {
                 opts += `<option value="${strId}" ${strId === myVal ? 'selected' : ''}>${getSkillName(skId)}</option>`;
             }
         });
@@ -1121,38 +1357,45 @@ function confirmarOcupacao() {
         }
     }
 
-    wiz.ocupKey = key;
-    wiz.occSkillsFinal = [...new Set([...occ.fixed, ...chosenIds])].filter(id => !SKILL_CATALOG[id].locked);
-    wiz.ptsOcupacaoTotal = wiz.attr.EDU * occ.eduMult;
-    wiz.ptsInteresseTotal = wiz.attr.INT * 2;
-    wiz.gastosOcc = {}; wiz.gastosInt = {}; wiz.skillBonuses = {};
+    // Define a margem de Nível de Crédito da ocupação
+    let crMin = occ.creditMin;
+    let crMax = occ.creditMax;
+    if (key === 'custom') {
+        crMin = Math.max(0, Math.min(99, parseInt(document.getElementById('customCrMin').value, 10) || 0));
+        crMax = Math.max(crMin, Math.min(99, parseInt(document.getElementById('customCrMax').value, 10) || 99));
+    }
+    wiz.creditMin = crMin;
+    wiz.creditMax = crMax;
 
-    const addB = (id, val) => { wiz.skillBonuses[id] = (wiz.skillBonuses[id] || 0) + val; };
-    if (occ.special === "actor") { addB(10, wiz.attr.APA*2); addB(16, wiz.attr.APA*2); addB(41, wiz.attr.APA*2); addB(5, wiz.attr.APA*2); addB(26, wiz.attr.DES*2); }
-    else if (occ.special === "artist") { let bM = Math.max(wiz.attr.APA, wiz.attr.INT, wiz.attr.DES)*2; [5,56,10,41].forEach(i=>addB(i,bM)); }
-    else if (occ.special === "athlete") { let bS = wiz.attr.FOR*2; [17,9,26,53,54].forEach(i=>addB(i,bS)); }
-    else if (occ.special === "dilettante") { let bSo = Math.max(wiz.attr.APA,wiz.attr.INT)*2; [10,16].forEach(i=>addB(i,bSo)); let bSp = Math.max(wiz.attr.INT,wiz.attr.DES)*2; chosenIds.slice(0,3).forEach(i=>addB(i,bSp)); }
-    else if (occ.special === "soldier") { wiz.occSkillsFinal.slice(0,5).forEach(i=>addB(i, wiz.attr.DES*2)); }
-    else if (occ.special === "tradesman") { wiz.occSkillsFinal.slice(0,5).forEach(i=>addB(i, Math.max(wiz.attr.DES,wiz.attr.INT)*2)); }
+    wiz.ocupKey = key;
+    // Inclui sempre Nível de Crédito (ID 10) no topo das perícias ocupacionais
+    wiz.occSkillsFinal = [10, ...new Set([...occ.fixed, ...chosenIds])].filter(id => !SKILL_CATALOG[id].locked);
+    wiz.ptsOcupacaoTotal = occ.calcPoints(wiz.attr);
+    wiz.ptsInteresseTotal = wiz.attr.INT * 2;
+    wiz.gastosOcc = { 10: crMin }; // Já pré-aloca o mínimo obrigatório de Nível de Crédito
+    wiz.gastosInt = {};
+    wiz.skillBonuses = {};
 
     step4PericiasOcupacionais();
 }
 
 function getSkillStartingValue(id) {
     let b = SKILL_CATALOG[id].base;
-    if (id === 13) b = Math.floor(wiz.attr.DES / 2);
-    if (id === 27) b = wiz.attr.EDU;
-    if (id === 10 && wiz.ocupKey) b = wiz.attr[OCCUPATIONS[wiz.ocupKey].creditBase] || 0;
-    return Math.min(99, b + (wiz.skillBonuses[id] || 0));
+    if (id === 13) b = Math.floor(wiz.attr.DES / 2); // Esquivar = DES / 2
+    if (id === 27) b = wiz.attr.EDU; // Idioma Nativo = EDU
+    return Math.min(99, b);
 }
 
 // ============================================================================
-// PASSO 4 e 5: DISTRIBUIÇÃO DE PERÍCIAS
+// PASSO 4 e 5: DISTRIBUIÇÃO DE PERÍCIAS (Com trava da margem de Crédito)
 // ============================================================================
 function renderizarPericiasUI(tipo) {
     const isOcc = tipo === 'occ';
     const disp = (isOcc ? wiz.ptsOcupacaoTotal : wiz.ptsInteresseTotal) - Object.values(isOcc ? wiz.gastosOcc : wiz.gastosInt).reduce((a,b)=>a+b, 0);
-    const listaIds = isOcc ? wiz.occSkillsFinal : Object.keys(SKILL_CATALOG).map(Number).filter(id => !SKILL_CATALOG[id].locked);
+    // Na tela de Interesses Pessoais, não exibe Nível de Crédito (10), pois ele é exclusivo da ocupação
+    const listaIds = isOcc
+        ? wiz.occSkillsFinal
+        : Object.keys(SKILL_CATALOG).map(Number).filter(id => !SKILL_CATALOG[id].locked && id !== 10);
     
     let html = `
         <h4 style="color: #a1eae9;">${isOcc ? t('Passo 4: Pontos Ocupacionais', 'Step 4: Occupational Points') : t('Passo 5: Interesses Pessoais', 'Step 5: Personal Interest')}</h4>
@@ -1165,10 +1408,13 @@ function renderizarPericiasUI(tipo) {
     listaIds.forEach(id => {
         let ini = getSkillStartingValue(id) + (isOcc ? 0 : (wiz.gastosOcc[id]||0));
         let g = (isOcc ? wiz.gastosOcc[id] : wiz.gastosInt[id]) || 0;
+        let labelExtra = (id === 10)
+            ? `<small style="color:#8a2be2;">(${t('Margem', 'Range')}: ${wiz.creditMin}%–${wiz.creditMax}%)</small>`
+            : `<small>(Base ${ini}%)</small>`;
         
         html += `
         <div class="wiz-skill-row">
-            <span style="flex:2;">${getSkillName(id)} <small>(Base ${ini}%)</small></span>
+            <span style="flex:2;">${getSkillName(id)} ${labelExtra}</span>
             <div style="display:flex; align-items:center; gap:5px;">
                 <button class="btn btn-sm btn-danger" onclick="modificarPericia(${id}, '${tipo}', -5)">-5</button>
                 <button class="btn btn-sm btn-danger" onclick="modificarPericia(${id}, '${tipo}', -1)">-1</button>
@@ -1198,11 +1444,15 @@ function modificarPericia(id, tipo, delta) {
     const curr = gm[id] || 0;
     const totalBase = getSkillStartingValue(id) + (wiz.gastosOcc[id]||0) + (wiz.gastosInt[id]||0);
 
+    // Define os limites mínimo e máximo permitidos para a perícia
+    const limiteMax = (id === 10) ? wiz.creditMax : 99;
+    const limiteMinGasto = (isOcc && id === 10) ? wiz.creditMin : 0;
+
     if (delta > 0) {
-        let maxAdd = Math.min(delta, maxDisp, 99 - totalBase);
+        let maxAdd = Math.min(delta, maxDisp, limiteMax - totalBase);
         if (maxAdd > 0) gm[id] = curr + maxAdd;
     } else {
-        let maxSub = Math.min(Math.abs(delta), curr);
+        let maxSub = Math.min(Math.abs(delta), curr - limiteMinGasto);
         if (maxSub > 0) gm[id] = curr - maxSub;
     }
     renderizarPericiasUI(tipo);
